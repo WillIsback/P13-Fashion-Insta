@@ -82,10 +82,10 @@ def test_run_tryon_returns_pil_image(tmp_path):
     user_img = Image.new("RGB", (64, 64))
     item_img = Image.new("RGB", (64, 64))
 
-    with patch("tryon.upload_image", side_effect=["user.png", "item.png"]), \
-         patch("tryon.submit_prompt", return_value="prompt-id-123"), \
-         patch("tryon.poll_result", return_value="Flux2-Klein-4b-base_00001_.png"), \
-         patch("tryon.fetch_output_image", return_value=Image.new("RGB", (512, 512))):
+    with patch("tryon.upload_image", side_effect=["user.png", "item.png"]) as mock_upload, \
+         patch("tryon.submit_prompt", return_value="prompt-id-123") as mock_submit, \
+         patch("tryon.poll_result", return_value="Flux2-Klein-4b-base_00001_.png") as mock_poll, \
+         patch("tryon.fetch_output_image", return_value=Image.new("RGB", (512, 512))) as mock_fetch:
 
         result = run_tryon(
             user_img=user_img,
@@ -96,3 +96,7 @@ def test_run_tryon_returns_pil_image(tmp_path):
         )
 
     assert isinstance(result, Image.Image)
+    assert mock_upload.call_count == 2
+    mock_submit.assert_called_once()
+    mock_poll.assert_called_once_with("prompt-id-123", "http://127.0.0.1:8188")
+    mock_fetch.assert_called_once_with("Flux2-Klein-4b-base_00001_.png", "http://127.0.0.1:8188")

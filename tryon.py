@@ -92,14 +92,17 @@ def poll_result(prompt_id: str, comfyui_url: str) -> str:
         history = resp.json()
         if prompt_id in history:
             job = history[prompt_id]
-            if "error" in job:
-                raise RuntimeError(f"ComfyUI error: {job['error']}")
-            outputs = job.get("outputs", {})
-            for node_output in outputs.values():
-                images = node_output.get("images", [])
-                if images:
-                    return images[0]["filename"]
-        time.sleep(POLL_INTERVAL)
+            if job.get("status", {}).get("completed"):
+                if "error" in job:
+                    raise RuntimeError(f"ComfyUI error: {job['error']}")
+                outputs = job.get("outputs", {})
+                for node_output in outputs.values():
+                    images = node_output.get("images", [])
+                    if images:
+                        return images[0]["filename"]
+                raise RuntimeError("ComfyUI job completed but produced no output images")
+        if time.time() < deadline:
+            time.sleep(POLL_INTERVAL)
     raise TimeoutError(f"ComfyUI did not complete within {POLL_TIMEOUT}s")
 
 
