@@ -1,5 +1,5 @@
 import json
-import pytest
+import pytest  # noqa: F401 — used for pytest.raises
 from pathlib import Path
 from PIL import Image
 from unittest.mock import patch, MagicMock
@@ -72,7 +72,21 @@ def test_upload_image_posts_multipart_and_returns_name():
     assert name == "abc123.png"
 
 
-def test_run_tryon_returns_pil_image(tmp_path):
+FAKE_IMG_INFO = {"filename": "Flux2-Klein-4b-base_00001_.png", "type": "output", "subfolder": ""}
+FAKE_FASHN_INFO = {"filename": "ComfyUI_temp_abc.png", "type": "temp", "subfolder": ""}
+
+
+def make_fashn_api_template():
+    """Minimal FasHN-VTO_api.json structure for testing."""
+    return {
+        "2": {"class_type": "LoadImage", "inputs": {"image": "old_person.png"}},
+        "3": {"class_type": "LoadImage", "inputs": {"image": "old_garment.jpg"}},
+        "5": {"class_type": "FashnVtonInference", "inputs": {"category": "tops", "pipeline": ["4", 0], "person_image": ["2", 0], "garment_image": ["3", 0]}},
+        "6": {"class_type": "PreviewImage", "inputs": {"images": ["5", 0]}},
+    }
+
+
+def test_run_tryon_flux_returns_pil_image(tmp_path):
     from tryon import run_tryon
 
     api_template_path = tmp_path / "tryon_api.json"
@@ -84,13 +98,14 @@ def test_run_tryon_returns_pil_image(tmp_path):
 
     with patch("tryon.upload_image", side_effect=["user.png", "item.png"]) as mock_upload, \
          patch("tryon.submit_prompt", return_value="prompt-id-123") as mock_submit, \
-         patch("tryon.poll_result", return_value="Flux2-Klein-4b-base_00001_.png") as mock_poll, \
+         patch("tryon.poll_result", return_value=FAKE_IMG_INFO) as mock_poll, \
          patch("tryon.fetch_output_image", return_value=Image.new("RGB", (512, 512))) as mock_fetch:
 
         result = run_tryon(
             user_img=user_img,
             item_img=item_img,
             colour="in navy blue",
+            workflow="flux",
             comfyui_url="http://127.0.0.1:8188",
             api_template_path=api_template_path,
         )
@@ -99,4 +114,54 @@ def test_run_tryon_returns_pil_image(tmp_path):
     assert mock_upload.call_count == 2
     mock_submit.assert_called_once()
     mock_poll.assert_called_once_with("prompt-id-123", "http://127.0.0.1:8188")
-    mock_fetch.assert_called_once_with("Flux2-Klein-4b-base_00001_.png", "http://127.0.0.1:8188")
+    mock_fetch.assert_called_once_with(FAKE_IMG_INFO, "http://127.0.0.1:8188")
+
+
+def test_run_tryon_fashn_injects_category(tmp_path):
+    from tryon import run_tryon
+
+    api_template_path = tmp_path / "fashn_api.json"
+    with open(api_template_path, "w") as f:
+        json.dump(make_fashn_api_template(), f)
+
+    user_img = Image.new("RGB", (64, 64))
+    item_img = Image.new("RGB", (64, 64))
+
+    with patch("tryon.upload_image", side_effect=["user.png", "item.png"]), \
+         patch("tryon.submit_prompt", return_value="pid-fashn") as mock_submit, \
+         patch("tryon.poll_result", return_value=FAKE_FASHN_INFO), \
+         patch("tryon.fetch_output_image", return_value=Image.new("RGB", (512, 512))):
+
+        result = run_tryon(
+            user_img=user_img,
+            item_img=item_img,
+            colour="",
+            category="bottoms",
+            workflow="fashn",
+            comfyui_url="http://127.0.0.1:8188",
+            api_template_path=api_template_path,
+        )
+
+    assert isinstance(result, Image.Image)
+    # Verify the submitted workflow had correct node values
+    submitted_workflow = mock_submit.call_args[0][0]
+    assert submitted_workflow["2"]["inputs"]["image"] == "user.png"
+    assert submitted_workflow["3"]["inputs"]["image"] == "item.png"
+    assert submitted_workflow["5"]["inputs"]["category"] == "bottoms"
+
+
+def test_inject_params_fashn_validates_category():
+    from tryon import inject_params_fashn
+
+    template = make_fashn_api_template()
+    with pytest.raises(ValueError, match="category must be one of"):
+        inject_params_fashn(template, "u.png", "g.png", "invalid-category")
+
+
+def test_inject_params_fashn_does_not_mutate_template():
+    from tryon import inject_params_fashn
+
+    template = make_fashn_api_template()
+    original = template["2"]["inputs"]["image"]
+    inject_params_fashn(template, "new_user.png", "new_garment.png", "tops")
+    assert template["2"]["inputs"]["image"] == original

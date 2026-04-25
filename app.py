@@ -19,6 +19,10 @@ TOP_N = 5
 
 SIZES = ["XS", "S", "M", "L", "XL"]
 
+WORKFLOW_FLUX = "phase_2/tryon_api.json"
+WORKFLOW_FASHN = "phase_2/FasHN-VTO_api.json"
+FASHN_CATEGORIES = ["tops", "bottoms", "one-pieces"]
+
 
 def _check_index():
     if not EMBEDDINGS_PATH.exists() or not METADATA_PATH.exists():
@@ -78,18 +82,50 @@ def on_select(user_photo, gallery_data: list, evt: gr.SelectData):
     )
 
 
-def on_try_on(user_photo, selected_item_img, colour_text, size):
+def switch_workflow(current: dict):
+    """Toggle between Flux2-Klein and FasHN-VTO workflows."""
+    if current["name"] == "Flux2-Klein":
+        return (
+            {"name": "FasHN-VTO", "path": WORKFLOW_FASHN},
+            gr.update(value="Switch to Flux2-Klein", variant="primary"),
+            gr.update(value="**Current: FasHN-VTO**"),
+            gr.update(visible=False),   # hide colour_input
+            gr.update(visible=True),    # show category_input
+        )
+    else:
+        return (
+            {"name": "Flux2-Klein", "path": WORKFLOW_FLUX},
+            gr.update(value="Switch to FasHN-VTO", variant="secondary"),
+            gr.update(value="**Current: Flux2-Klein**"),
+            gr.update(visible=True),    # show colour_input
+            gr.update(visible=False),   # hide category_input
+        )
+
+
+def on_try_on(user_photo, selected_item_img, colour_text, category, workflow_state: dict):
     """Submit try-on to ComfyUI and return the result image."""
     if user_photo is None or selected_item_img is None:
-        return None, gr.update(visible=False)
+        return gr.update(value=None, visible=False), gr.update(visible=False)
 
     user_img = Image.fromarray(user_photo).convert("RGB")
-    item_img = selected_item_img.convert("RGB") if isinstance(selected_item_img, Image.Image) else Image.fromarray(selected_item_img).convert("RGB")
+    item_img = (
+        selected_item_img.convert("RGB")
+        if isinstance(selected_item_img, Image.Image)
+        else Image.fromarray(selected_item_img).convert("RGB")
+    )
 
-    colour = colour_text.strip() if colour_text.strip() else "original colour"
+    is_fashn = workflow_state["name"] == "FasHN-VTO"
+    api_path = Path(workflow_state["path"])
 
     try:
-        result = run_tryon(user_img=user_img, item_img=item_img, colour=colour)
+        result = run_tryon(
+            user_img=user_img,
+            item_img=item_img,
+            colour=colour_text.strip() if colour_text else "",
+            category=category or "tops",
+            workflow="fashn" if is_fashn else "flux",
+            api_template_path=api_path,
+        )
     except ConnectionError as e:
         return gr.update(value=None, visible=False), gr.update(value=str(e), visible=True)
     except TimeoutError as e:
@@ -131,6 +167,13 @@ def build_ui():
                     colour_input = gr.Textbox(
                         label="Colour customisation (e.g. 'in red', 'in navy blue')",
                         placeholder="Leave empty to keep original colour",
+                        visible=True,
+                    )
+                    category_input = gr.Dropdown(
+                        choices=FASHN_CATEGORIES,
+                        value="tops",
+                        label="Garment category (FasHN-VTO only)",
+                        visible=False,
                     )
                     size_input = gr.Dropdown(
                         choices=SIZES, value="M", label="Size (display only)"
@@ -145,6 +188,12 @@ def build_ui():
 
         # Internal state
         gallery_data = gr.State([])
+        workflow_state = gr.State({"name": "Flux2-Klein", "path": WORKFLOW_FLUX})
+
+        # --- Workflow switch button ---
+        with gr.Row():
+            workflow_toggle = gr.Button("Switch to FASHN-VTON", variant="secondary")
+            workflow_label = gr.Markdown("**Current: Flux2-Klein**")
 
         # --- Event wiring ---
         upload_btn.click(
@@ -161,7 +210,7 @@ def build_ui():
 
         tryon_btn.click(
             fn=on_try_on,
-            inputs=[user_photo, selected_preview, colour_input, size_input],
+            inputs=[user_photo, selected_preview, colour_input, category_input, workflow_state],
             outputs=[tryon_result, error_box],
         )
 
@@ -173,6 +222,13 @@ def build_ui():
         reject_btn.click(
             fn=lambda: (None, None, gr.update(visible=False)),
             outputs=[tryon_result, selected_preview, tryon_section],
+        )
+
+        # --- Workflow toggle ---
+        workflow_toggle.click(
+            fn=switch_workflow,
+            inputs=[workflow_state],
+            outputs=[workflow_state, workflow_toggle, workflow_label, colour_input, category_input],
         )
 
     return demo
