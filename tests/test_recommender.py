@@ -1,6 +1,5 @@
 import json
 import numpy as np
-import pytest
 from pathlib import Path
 from PIL import Image
 from unittest.mock import patch, MagicMock
@@ -58,7 +57,7 @@ def test_search_result_structure(tmp_path):
         assert isinstance(r["score"], float)
 
 
-def test_recommend_returns_top5(tmp_path):
+def test_recommend_returns_correct_top_n(tmp_path):
     from recommender import recommend
 
     emb_path = tmp_path / "embeddings.npy"
