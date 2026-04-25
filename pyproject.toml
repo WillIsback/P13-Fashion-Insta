@@ -16,8 +16,8 @@ dependencies = [
     "requests>=2.31.0",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "pytest>=8.0.0",
     "ruff>=0.15.12",
 ]
