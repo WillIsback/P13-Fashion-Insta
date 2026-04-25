@@ -1,11 +1,10 @@
 """
-Catalogue indexer — run once to build DINOv2 embeddings for all catalogue items.
+Catalogue indexer — run once to build DINOv3 embeddings for all catalogue items.
 
 Usage:
     uv run python catalogue.py
 """
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -21,7 +20,7 @@ MODEL.eval()
 
 
 def embed_image(img: Image.Image) -> np.ndarray:
-    """Return the 384-dim DINOv2 [CLS] embedding for a PIL image."""
+    """Return the 384-dim DINOv3 [CLS] embedding for a PIL image."""
     inputs = PROCESSOR(images=img, return_tensors="pt")
     with torch.no_grad():
         outputs = MODEL(**inputs)
@@ -56,6 +55,9 @@ def build_index(
         vec = embed_image(img)
         embeddings.append(vec)
         index_meta.append(metadata[filename])
+
+    if not embeddings:
+        raise ValueError(f"No matching images found in {dataset_dir}. Check dataset_dir and metadata keys.")
 
     emb_array = np.stack(embeddings, axis=0).astype(np.float32)
 
