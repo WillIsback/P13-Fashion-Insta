@@ -4,11 +4,9 @@ Gradio UI for the photo-based fashion recommendation PoC.
 Run:
     uv run python app.py
 """
-import json
 from pathlib import Path
 
 import gradio as gr
-import numpy as np
 from PIL import Image
 
 from recommender import recommend
@@ -55,10 +53,12 @@ def on_upload(user_photo):
         gallery_items.append((str(img_path), label))
 
     return (
-        gr.update(visible=True),   # show results section
-        gallery_items,
-        gr.update(visible=False),  # hide try-on section until item selected
-        gallery_items,             # populate gallery_data state
+        gr.update(visible=True),   # results_section
+        gallery_items,             # gallery
+        gr.update(visible=False),  # tryon_section
+        gallery_items,             # gallery_data state
+        gr.update(visible=False),  # error_box — clear on new upload
+        gr.update(value=None),     # tryon_result — clear on new upload
     )
 
 
@@ -91,11 +91,11 @@ def on_try_on(user_photo, selected_item_img, colour_text, size):
     try:
         result = run_tryon(user_img=user_img, item_img=item_img, colour=colour)
     except ConnectionError as e:
-        return None, gr.update(value=str(e), visible=True)
+        return gr.update(value=None, visible=False), gr.update(value=str(e), visible=True)
     except TimeoutError as e:
-        return None, gr.update(value=str(e), visible=True)
+        return gr.update(value=None, visible=False), gr.update(value=str(e), visible=True)
     except Exception as e:
-        return None, gr.update(value=f"Try-on failed: {e}", visible=True)
+        return gr.update(value=None, visible=False), gr.update(value=f"Try-on failed: {e}", visible=True)
 
     return result, gr.update(visible=False)
 
@@ -150,7 +150,7 @@ def build_ui():
         upload_btn.click(
             fn=on_upload,
             inputs=[user_photo],
-            outputs=[results_section, gallery, tryon_section, gallery_data],
+            outputs=[results_section, gallery, tryon_section, gallery_data, error_box, tryon_result],
         )
 
         gallery.select(
@@ -171,8 +171,8 @@ def build_ui():
         )
 
         reject_btn.click(
-            fn=lambda: (None, gr.update(visible=False)),
-            outputs=[tryon_result, tryon_section],
+            fn=lambda: (None, None, gr.update(visible=False)),
+            outputs=[tryon_result, selected_preview, tryon_section],
         )
 
     return demo
