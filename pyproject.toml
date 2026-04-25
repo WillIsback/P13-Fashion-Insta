@@ -1,0 +1,23 @@
+[project]
+name = "p13"
+version = "0.1.0"
+description = "Photo-based fashion recommendation PoC"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch>=2.2.0",
+    "torchvision>=0.17.0",
+    "transformers>=4.40.0",
+    "rembg>=2.0.57",
+    "Pillow>=10.0.0",
+    "numpy>=1.26.0",
+    "scikit-learn>=1.4.0",
+    "gradio>=4.40.0",
+    "requests>=2.31.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.0.0",
+    "ruff>=0.15.12",
+]
