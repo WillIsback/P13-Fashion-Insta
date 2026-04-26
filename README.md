@@ -250,3 +250,46 @@ P13/
 ├── pyproject.toml
 └── .env.example
 ```
+
+---
+
+## Références & Third Parties
+
+### Modèles utilisés
+
+| Modèle | Usage | Lien |
+|--------|-------|------|
+| **Marqo FashionSigLIP** | Embedding image mode retrieval (768-dim) | [HuggingFace](https://huggingface.co/Marqo/marqo-fashionSigLIP) |
+| **DINOv3 ViT-H+/16** | Feature extraction — évaluation identité & fidélité vêtement | [HuggingFace](https://huggingface.co/facebook/dinov3-vith16plus-pretrain-lvd1689m) |
+| **FashionCLIP** | Index CLIP fashion alternatif | [HuggingFace](https://huggingface.co/patrickjohncyh/fashion-clip) |
+| **FasHN-VTO-1.5** | Virtual try-on dédié (person + garment + category) | [HuggingFace](https://huggingface.co/fashn-ai/fashn-vton-1.5) |
+| **FLUX.1 / Flux2-Klein 4B** | Image editing par inpainting (workflow ComfyUI) | [Black Forest Labs](https://blackforestlabs.ai) |
+| **Qwen-Image-Edit-2511 7B** | Instruction-following image editing (workflow ComfyUI) | [HuggingFace](https://huggingface.co/Qwen/Qwen2-VL-7B-Instruct) |
+| **Qwen3-VL-4B-Instruct** | Scoring VLM sémantique (évaluation VTON 5 dimensions) | [HuggingFace](https://huggingface.co/Qwen/Qwen3-VL-4B-Instruct) |
+
+### Outils & Frameworks
+
+| Outil | Usage | Lien |
+|-------|-------|------|
+| **ComfyUI** | Moteur d'inférence VTO (graph-based, API JSON) | [GitHub](https://github.com/comfyanonymous/ComfyUI) |
+| **rembg** | Suppression de fond (u2net) — isolation vêtement | [GitHub](https://github.com/danielgatis/rembg) |
+| **OpenVTON-Bench** | Protocole d'évaluation VTON (SAM3 + DINOv3 + métriques multi-échelles) | [GitHub](https://github.com/RenxingIntelligence/OpenVTON-Bench) |
+| **DeepFashion InShop** | Dataset catalogue vêtements (>52k images, retrieval benchmark) | [Kaggle](https://www.kaggle.com/datasets/hserdaraltan/deepfashion-inshop-clothes-retrieval) |
+| **Gradio** | Interface utilisateur web | [gradio.app](https://www.gradio.app) |
+
+### Papers — Virtual Try-On (état de l'art étudié)
+
+| Papier | Modèle | arXiv |
+|--------|--------|-------|
+| *Transformer-Empowered Diffusion for Virtual Try-On* | TED-VITON | [2411.17017](https://arxiv.org/abs/2411.17017) |
+| *VTON-360: High-Fidelity Virtual Try-On from Any Viewing Angle* | VTON-360 | [2503.12165](https://arxiv.org/abs/2503.12165) |
+| *OmniTry: Flexible Virtual Try-On via Unified Paradigm* | OmniTry | [2508.13632](https://arxiv.org/abs/2508.13632) |
+| *OmniVTON: Unified Garment-Centric Virtual Try-On* | OmniVTON | [2507.15037](https://arxiv.org/abs/2507.15037) |
+| *OmniVTON++* | OmniVTON++ | [2602.14552](https://arxiv.org/abs/2602.14552) |
+| *PROMO: Prompt-based Outfit Recommendation* | PROMO | [2603.11675](https://arxiv.org/abs/2603.11675) |
+| *SMF-VTO: Structure-aware Multi-flow Virtual Try-On* | SMF-VTO | [2603.29587](https://arxiv.org/abs/2603.29587) |
+| *DEFT-VTON: Deformable Feature Transfer for VTON* | DEFT-VTON | [2509.13506](https://arxiv.org/abs/2509.13506) |
+| *DiT-VTON: Diffusion Transformer for Virtual Try-On* | DiT-VTON | [2510.04797](https://arxiv.org/abs/2510.04797) |
+| *TEMU-VTOFF: Try-On and Try-Off Unified Framework* | TEMU-VTOFF | [2505.21062](https://arxiv.org/abs/2505.21062) |
+| *Tstars-Tryon-1.0* | Tstars | [2604.19748](https://arxiv.org/abs/2604.19748) |
+| *FIT Dataset: Fashion Image Try-on Benchmark* | FIT | [2604.08526](https://arxiv.org/abs/2604.08526) |
