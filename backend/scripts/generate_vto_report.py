@@ -11,7 +11,7 @@ Usage:
 Prerequisites:
     - ComfyUI running at http://127.0.0.1:8188
     - Catalogue index built: uv run python -m backend.scripts.build_index
-    - All 3 workflow JSON templates present in phase_2/
+    - All 3 workflow JSON templates present in comfyui_api/
 """
 import json
 import sys
@@ -34,9 +34,9 @@ MANIFEST = OUT_DIR / "manifest.json"
 COMFYUI_URL = "http://127.0.0.1:8188"
 
 WORKFLOWS = {
-    "flux":  Path("phase_2/tryon_api.json"),
-    "fashn": Path("phase_2/FasHN-VTO_api.json"),
-    "qwen":  Path("phase_2/image_qwen_image_edit_2511_api.json"),
+    "flux":  Path("comfyui_api/image_flux2_klein_image_edit_4b_base_api.json"),
+    "fashn": Path("comfyui_api/FasHN-VTO_api.json"),
+    "qwen":  Path("comfyui_api/image_qwen_image_edit_2511_api.json"),
 }
 
 # Qwen loads a 7.9 GB text encoder on first use — needs much more time.

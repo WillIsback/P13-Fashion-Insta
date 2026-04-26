@@ -2,9 +2,9 @@
 ComfyUI virtual try-on client.
 
 Supports three workflows:
-  - "flux"  : Flux2-Klein image editor  (phase_2/tryon_api.json)
-  - "fashn" : FasHN-VTO specialised try-on (phase_2/FasHN-VTO_api.json)
-  - "qwen"  : Qwen-Image-Edit-2511 image editor (phase_2/image_qwen_image_edit_2511_api.json)
+  - "flux"  : Flux2-Klein image editor  (comfyui_api/image_flux2_klein_image_edit_4b_base_api.json)
+  - "fashn" : FasHN-VTO specialised try-on (comfyui_api/FasHN-VTO_api.json)
+  - "qwen"  : Qwen-Image-Edit-2511 image editor (comfyui_api/image_qwen_image_edit_2511_api.json)
 """
 import copy
 import io
@@ -186,7 +186,7 @@ def run_tryon(
     prompt: str = "",
     workflow: str = "flux",
     comfyui_url: str = COMFYUI_URL,
-    api_template_path: Path = Path("phase_2/tryon_api.json"),
+    api_template_path: Path = Path("comfyui_api/image_flux2_klein_image_edit_4b_base_api.json"),
     poll_timeout: float = POLL_TIMEOUT,
 ) -> Image.Image:
     """

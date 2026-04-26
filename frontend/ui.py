@@ -17,9 +17,9 @@ TOP_N = 5
 
 SIZES = ["XS", "S", "M", "L", "XL"]
 
-WORKFLOW_FLUX = "phase_2/tryon_api.json"
-WORKFLOW_FASHN = "phase_2/FasHN-VTO_api.json"
-WORKFLOW_QWEN = "phase_2/image_qwen_image_edit_2511_api.json"
+WORKFLOW_FLUX = "comfyui_api/image_flux2_klein_image_edit_4b_base_api.json"
+WORKFLOW_FASHN = "comfyui_api/FasHN-VTO_api.json"
+WORKFLOW_QWEN = "comfyui_api/image_qwen_image_edit_2511_api.json"
 FASHN_CATEGORIES = ["tops", "bottoms", "one-pieces"]
 
 WORKFLOW_OPTIONS = ["Flux2-Klein", "FasHN-VTO", "Qwen-Image-Edit-2511"]
