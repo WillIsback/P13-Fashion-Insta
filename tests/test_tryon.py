@@ -98,7 +98,7 @@ def test_run_tryon_flux_returns_pil_image(tmp_path):
 
     assert isinstance(result, Image.Image)
     mock_submit.assert_called_once()
-    mock_poll.assert_called_once_with("prompt-id-123", "http://127.0.0.1:8188")
+    mock_poll.assert_called_once_with("prompt-id-123", "http://127.0.0.1:8188", timeout=120.0)
 
 
 def test_run_tryon_fashn_injects_category(tmp_path):

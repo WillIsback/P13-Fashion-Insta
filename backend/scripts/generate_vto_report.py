@@ -18,12 +18,12 @@ import sys
 import time
 from pathlib import Path
 
+import requests
 from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from backend.core.retrieval import recommend
-from backend.core.tryon import run_tryon
+from backend.core.tryon import build_qwen_prompt, run_tryon
 
 EMBEDDINGS = Path("data/embeddings.npy")
 METADATA = Path("data/index_metadata.json")
@@ -39,9 +39,15 @@ WORKFLOWS = {
     "qwen":  Path("phase_2/image_qwen_image_edit_2511_api.json"),
 }
 
+# Qwen loads a 7.9 GB text encoder on first use — needs much more time.
+POLL_TIMEOUTS = {
+    "flux":  120.0,
+    "fashn": 180.0,
+    "qwen":  600.0,
+}
+
 
 def _check_comfyui():
-    import requests
     try:
         requests.get(f"{COMFYUI_URL}/system_stats", timeout=3).raise_for_status()
     except Exception:
@@ -49,15 +55,24 @@ def _check_comfyui():
         sys.exit(1)
 
 
+def _interrupt_and_clear():
+    """Send interrupt + clear queue so a timed-out job doesn't block the GPU."""
+    try:
+        requests.post(f"{COMFYUI_URL}/interrupt", timeout=5)
+        requests.post(f"{COMFYUI_URL}/queue", json={"clear": True}, timeout=5)
+        time.sleep(2)  # give ComfyUI time to unload
+    except Exception:
+        pass
+
+
 def _load_manifest() -> dict:
     if not MANIFEST.exists():
-        print("[ERROR] manifest.json not found. Run retrieval first (already done if examples/ has garment images).")
+        print("[ERROR] manifest.json not found. Run retrieval first.")
         sys.exit(1)
     return json.loads(MANIFEST.read_text())
 
 
 def _run_one(user_img: Image.Image, garment_img: Image.Image, garment_meta: dict, workflow: str) -> Image.Image:
-    from backend.core.tryon import build_qwen_prompt
     return run_tryon(
         user_img=user_img,
         item_img=garment_img,
@@ -67,6 +82,7 @@ def _run_one(user_img: Image.Image, garment_img: Image.Image, garment_meta: dict
         workflow=workflow,
         comfyui_url=COMFYUI_URL,
         api_template_path=WORKFLOWS[workflow],
+        poll_timeout=POLL_TIMEOUTS[workflow],
     )
 
 
@@ -97,6 +113,7 @@ def main():
                 print(f"done ({time.time() - t0:.1f}s) → {out_path.name}")
             except Exception as e:
                 print(f"FAILED: {e}")
+                _interrupt_and_clear()
 
     print("\nAll VTO images generated. Open docs/vto/vto_comparison.md to view the report.")
 

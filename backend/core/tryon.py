@@ -134,12 +134,12 @@ def submit_prompt(workflow: dict, comfyui_url: str) -> str:
     return response.json()["prompt_id"]
 
 
-def poll_result(prompt_id: str, comfyui_url: str) -> dict:
+def poll_result(prompt_id: str, comfyui_url: str, timeout: float = POLL_TIMEOUT) -> dict:
     """
     Poll until job completes. Returns {"filename", "type", "subfolder"}.
     Raises TimeoutError or RuntimeError on failure.
     """
-    deadline = time.time() + POLL_TIMEOUT
+    deadline = time.time() + timeout
     while time.time() < deadline:
         resp = requests.get(f"{comfyui_url}/history/{prompt_id}")
         resp.raise_for_status()
@@ -161,7 +161,7 @@ def poll_result(prompt_id: str, comfyui_url: str) -> dict:
                 raise RuntimeError("ComfyUI job completed but produced no output images")
         if time.time() < deadline:
             time.sleep(POLL_INTERVAL)
-    raise TimeoutError(f"ComfyUI did not complete within {POLL_TIMEOUT}s")
+    raise TimeoutError(f"ComfyUI did not complete within {timeout}s")
 
 
 def fetch_output_image(img_info: dict, comfyui_url: str) -> Image.Image:
@@ -187,6 +187,7 @@ def run_tryon(
     workflow: str = "flux",
     comfyui_url: str = COMFYUI_URL,
     api_template_path: Path = Path("phase_2/tryon_api.json"),
+    poll_timeout: float = POLL_TIMEOUT,
 ) -> Image.Image:
     """
     Full try-on pipeline.
@@ -224,5 +225,5 @@ def run_tryon(
         wf = inject_params_flux(template, user_name, item_name, colour or "original colour")
 
     prompt_id = submit_prompt(wf, comfyui_url)
-    img_info = poll_result(prompt_id, comfyui_url)
+    img_info = poll_result(prompt_id, comfyui_url, timeout=poll_timeout)
     return fetch_output_image(img_info, comfyui_url)
