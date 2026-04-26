@@ -6,6 +6,24 @@ Upload une photo → top-5 vêtements similaires récupérés depuis le catalogu
 
 ---
 
+## Rapports & Évaluations
+
+### Embedder — Retrieval
+
+| Rapport | Description |
+|---------|-------------|
+| [Comparaison des embedders](docs/Embedder/retrieval_comparison.md) | Benchmark DINOv3 · FashionCLIP · Marqo FashionSigLIP — qualité visuelle top-5 |
+| [Évaluation du recall](docs/Embedder/recall_evaluation.md) | Recall@K sur 6 utilisateurs démo — métriques quantitatives par modèle |
+
+### VTO — Virtual Try-On
+
+| Rapport | Description |
+|---------|-------------|
+| [Comparaison des modèles VTO](docs/vto/vto_comparison.md) | Flux2-Klein · FasHN-VTO · Qwen-2511 — résultats côte à côte par utilisateur |
+| [Évaluation VTON](docs/vto/vto_evaluation.md) | Métriques multi-niveaux : pixel (SSIM/PSNR) · feature (DINOv3) · VLM sémantique (Qwen3-VL) |
+
+---
+
 ## Demo
 
 | User | Garment recommandé | Flux2-Klein | FasHN-VTO | Qwen-2511 |

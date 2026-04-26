@@ -17,6 +17,9 @@ dependencies = [
     "open-clip-torch>=3.3.0",
     "accelerate>=0.30.0",
     "tqdm>=4.66.0",
+    "lpips>=0.1.4",
+    "scikit-image>=0.21.0",
+    "loguru>=0.7.0",
 ]
 
 [dependency-groups]

@@ -1,0 +1,6 @@
+{"source": "user_1_garment_1.jpg", "target": "user_1.png", "generated": "user_1_garment_1.png", "garment_idx": 6415, "garment_category": "Jackets_Coats", "sam3_prompt": "jacket", "retrieval_score": 0.6434}
+{"source": "user_2_garment_1.jpg", "target": "user_2.png", "generated": "user_2_garment_1.png", "garment_idx": 38, "garment_category": "Denim", "sam3_prompt": "pants", "retrieval_score": 0.4669}
+{"source": "user_3_garment_1.jpg", "target": "user_3.png", "generated": "user_3_garment_1.png", "garment_idx": 4099, "garment_category": "Denim", "sam3_prompt": "shorts", "retrieval_score": 0.3644}
+{"source": "user_4_garment_1.jpg", "target": "user_4.png", "generated": "user_4_garment_1.png", "garment_idx": 5404, "garment_category": "Dresses", "sam3_prompt": "dress", "retrieval_score": 0.4168}
+{"source": "user_5_garment_1.jpg", "target": "user_5.png", "generated": "user_5_garment_1.png", "garment_idx": 8287, "garment_category": "Shorts", "sam3_prompt": "shorts", "retrieval_score": 0.4624}
+{"source": "user_6_garment_1.jpg", "target": "user_6.png", "generated": "user_6_garment_1.png", "garment_idx": 5262, "garment_category": "Dresses", "sam3_prompt": "dress", "retrieval_score": 0.5294}

@@ -1,0 +1,68 @@
+data:
+  test_jsonl: "./docs/vto/openvton_bench_data/test_fashn.jsonl"
+  generated_dirs:
+    - name: "fashn-vto-1.5"
+      path: "./docs/vto/examples/matched"
+      description: "FasHN-VTO-1.5 results on demo users"
+
+  output_dir: "./docs/vto/openvton_bench_results"
+  base_image_dir: "./docs/vto/examples"
+
+models:
+  dinov3:
+    path: "facebook/dinov3-vith16plus-pretrain-lvd1689m"
+    image_size: 1024
+
+  sam:
+    checkpoint: "facebook/sam3"
+
+    threshold: 0.5
+    mask_threshold: 0.5
+    default_prompt: "clothing"
+    use_dynamic_prompt: true  # Use garment_category from JSONL as prompt
+
+    cluster_label_mapping: ""
+    visual_buckets: ""
+
+  qwen_vl:
+    api_key: ""  # Set DASHSCOPE_API_KEY env var or fill here
+    base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    model_name: "qwen-vl-plus"
+    max_tokens: 2048
+    max_workers: 6
+
+evaluation:
+  enable_vlm: false
+  enable_garment: true
+  enable_all: false
+  enable_pixel: true
+
+  pixel:
+    enable_fid: false
+
+  vlm_dimensions:
+    - name: "background_consistency"
+    - name: "person_consistency"
+    - name: "garment_texture"
+    - name: "garment_shape"
+    - name: "overall_realism"
+
+  metrics:
+    - "cosine_similarity"
+    - "mse"
+    - "ssim"
+    - "psnr"
+    - "lpips"
+
+  erosion_scales: [40, 80, 120]
+
+performance:
+  gpu_ids: "0"
+  num_workers: 2
+
+reporting:
+  visualizations: false
+
+logging:
+  level: "INFO"
+  save_log: false

@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-04-26T21:15:27.701710",
+  "num_models": 1,
+  "models": [
+    "fashn-vto-1.5"
+  ],
+  "evaluation_types": [
+    "garment",
+    "pixel"
+  ],
+  "model_rankings": {
+    "garment_ssim": [
+      [
+        "fashn-vto-1.5",
+        0.9895858739813169
+      ]
+    ],
+    "pixel_ssim": [
+      [
+        "fashn-vto-1.5",
+        0.9298749466737112
+      ]
+    ]
+  }
+}

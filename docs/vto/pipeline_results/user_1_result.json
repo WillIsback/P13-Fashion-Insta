@@ -1,0 +1,28 @@
+{
+  "user_key": "user_1",
+  "garment_idx": 0,
+  "garment_category": "Jackets_Coats",
+  "retrieval_score": 0.7777,
+  "sam3_prompt": "jacketscoats",
+  "vton_success": true,
+  "person_image": "user_1.png",
+  "garment_image": "user_1_garment_1.jpg",
+  "result_image": "user_1_vton.png",
+  "sample_metadata": {
+    "garment_idx": 0,
+    "garment_category": "Jackets_Coats",
+    "sam3_prompt": "jacketscoats",
+    "retrieval_score": 0.7777
+  },
+  "metrics": {
+    "sample": "user_1_pipeline",
+    "user": "user_1",
+    "garment_category": "Jackets_Coats",
+    "fashn_category": "tops",
+    "pixel_ssim": 1.0,
+    "pixel_psnr": 22.44,
+    "pixel_mse": 370.38,
+    "garment_fidelity_dino": 0.6374,
+    "identity_preservation_dino": 0.9906
+  }
+}

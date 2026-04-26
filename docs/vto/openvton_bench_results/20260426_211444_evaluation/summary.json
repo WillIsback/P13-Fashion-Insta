@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-04-26T21:14:52.712276",
+  "num_models": 0,
+  "models": [],
+  "evaluation_types": [
+    "garment",
+    "pixel"
+  ],
+  "model_rankings": {
+    "garment_ssim": [],
+    "pixel_ssim": []
+  }
+}

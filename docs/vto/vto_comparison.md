@@ -169,9 +169,9 @@
 
 ### Try-On — Top-1 Garment (Dresses)
 
-| Flux2-Klein | FasHN-VTO | Qwen-Image-Edit-2511 |
-|:-----------:|:---------:|:--------------------:|
+|                         Flux2-Klein                         |                          FasHN-VTO                           |                    Qwen-Image-Edit-2511                     |
+| :---------------------------------------------------------: | :----------------------------------------------------------: | :---------------------------------------------------------: |
 | <img src="examples/user_6_garment_1_flux.png" width="200"/> | <img src="examples/user_6_garment_1_fashn.png" width="200"/> | <img src="examples/user_6_garment_1_qwen.png" width="200"/> |
-| Colour prompt | Category: one-pieces | Auto-prompt from annotation |
+|                        Colour prompt                        |                     Category: one-pieces                     |                 Auto-prompt from annotation                 |
 
 ---

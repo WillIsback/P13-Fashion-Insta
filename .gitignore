@@ -36,7 +36,7 @@ docs/.obsidian/
 .claude/
 
 # Internal planning docs (not for public repo)
-docs/superpowers/
+docs/superpowers
 !docs/Scrumboard/
 !docs/gpu_cost_scalability_study.md
 docs/segmentation/
