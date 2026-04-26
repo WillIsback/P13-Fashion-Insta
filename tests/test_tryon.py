@@ -200,3 +200,11 @@ def test_build_qwen_prompt_fallback_on_missing_meta():
     prompt = build_qwen_prompt({})
     assert isinstance(prompt, str)
     assert len(prompt) > 10
+
+
+def test_build_qwen_prompt_fallback_on_empty_category():
+    from backend.core.tryon import build_qwen_prompt
+
+    prompt = build_qwen_prompt({"category_name": ""})
+    assert "garment" in prompt.lower()
+    assert "  " not in prompt  # no double space

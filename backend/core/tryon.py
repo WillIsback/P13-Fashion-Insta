@@ -1,9 +1,10 @@
 """
 ComfyUI virtual try-on client.
 
-Supports two workflows:
+Supports three workflows:
   - "flux"  : Flux2-Klein image editor  (phase_2/tryon_api.json)
-  - "fashn"  : FasHN-VTO specialised try-on (phase_2/FasHN-VTO_api.json)
+  - "fashn" : FasHN-VTO specialised try-on (phase_2/FasHN-VTO_api.json)
+  - "qwen"  : Qwen-Image-Edit-2511 image editor (phase_2/image_qwen_image_edit_2511_api.json)
 """
 import copy
 import io
@@ -75,7 +76,7 @@ def inject_params_qwen(
 ) -> dict:
     """Inject person image, garment image, and prompt into Qwen-Image-Edit-2511 workflow."""
     workflow = copy.deepcopy(template)
-    workflow[QWEN_PERSON_NODE]["inputs"]["image"]  = user_image_name
+    workflow[QWEN_PERSON_NODE]["inputs"]["image"] = user_image_name
     workflow[QWEN_GARMENT_NODE]["inputs"]["image"] = item_image_name
     workflow[QWEN_PROMPT_NODE]["inputs"]["prompt"] = prompt
     return workflow
@@ -83,7 +84,7 @@ def inject_params_qwen(
 
 def build_qwen_prompt(meta: dict) -> str:
     """Build a preservation-focused try-on prompt from catalogue item metadata."""
-    garment = meta.get("category_name", "garment").replace("_", " ").lower()
+    garment = (meta.get("category_name") or "garment").replace("_", " ").lower()
     return (
         f"Virtual try-on: dress the person with the {garment} shown in the reference image. "
         "Preserve the person's face, hair, skin tone, body pose, and the original background "
