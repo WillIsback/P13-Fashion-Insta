@@ -208,3 +208,33 @@ def test_build_qwen_prompt_fallback_on_empty_category():
     prompt = build_qwen_prompt({"category_name": ""})
     assert "garment" in prompt.lower()
     assert "  " not in prompt  # no double space
+
+
+def test_run_tryon_qwen_returns_pil_image(tmp_path):
+    from backend.core.tryon import run_tryon
+
+    api_template_path = tmp_path / "qwen_api.json"
+    api_template_path.write_text(json.dumps(make_qwen_api_template()))
+
+    user_img = Image.new("RGB", (64, 64))
+    item_img = Image.new("RGB", (64, 64))
+
+    with patch("backend.core.tryon.upload_image", side_effect=["user.png", "item.png"]), \
+         patch("backend.core.tryon.submit_prompt", return_value="pid-qwen") as mock_submit, \
+         patch("backend.core.tryon.poll_result", return_value=FAKE_QWEN_INFO), \
+         patch("backend.core.tryon.fetch_output_image", return_value=Image.new("RGB", (512, 512))):
+
+        result = run_tryon(
+            user_img=user_img,
+            item_img=item_img,
+            prompt="Virtual try-on: dress the person with the dress shown in the reference image.",
+            workflow="qwen",
+            comfyui_url="http://127.0.0.1:8188",
+            api_template_path=api_template_path,
+        )
+
+    assert isinstance(result, Image.Image)
+    submitted_workflow = mock_submit.call_args[0][0]
+    assert submitted_workflow["41"]["inputs"]["image"] == "user.png"
+    assert submitted_workflow["83"]["inputs"]["image"] == "item.png"
+    assert "dress" in submitted_workflow["170:151"]["inputs"]["prompt"]

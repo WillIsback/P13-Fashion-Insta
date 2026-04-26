@@ -183,6 +183,7 @@ def run_tryon(
     item_img: Image.Image,
     colour: str = "",
     category: str = "tops",
+    prompt: str = "",
     workflow: str = "flux",
     comfyui_url: str = COMFYUI_URL,
     api_template_path: Path = Path("phase_2/tryon_api.json"),
@@ -192,6 +193,7 @@ def run_tryon(
 
     workflow="flux"  : Flux2-Klein — uses colour prompt
     workflow="fashn" : FasHN-VTO  — uses category (tops/bottoms/one-pieces)
+    workflow="qwen"  : Qwen-Image-Edit-2511 — uses text prompt (auto-built from metadata if empty)
 
     Raises ConnectionError, TimeoutError, or FileNotFoundError on failure.
     """
@@ -215,6 +217,9 @@ def run_tryon(
 
     if workflow == "fashn":
         wf = inject_params_fashn(template, user_name, item_name, category)
+    elif workflow == "qwen":
+        effective_prompt = prompt.strip() if prompt.strip() else build_qwen_prompt({})
+        wf = inject_params_qwen(template, user_name, item_name, effective_prompt)
     else:
         wf = inject_params_flux(template, user_name, item_name, colour or "original colour")
 
