@@ -37,8 +37,7 @@ docs/.obsidian/
 
 # Internal planning docs (not for public repo)
 docs/superpowers/
-docs/Scrumboard/
-docs/gpu_cost_scalability_study.md
+!docs/Scrumboard/
+!docs/gpu_cost_scalability_study.md
 docs/segmentation/
 docs/vto/models-specs/
-"docs/vto/Virtual Try-On Research.md"
