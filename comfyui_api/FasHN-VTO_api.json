@@ -1,0 +1,71 @@
+{
+  "2": {
+    "inputs": {
+      "image": "person1.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "3": {
+    "inputs": {
+      "image": "garment1.jpg"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "4": {
+    "inputs": {
+      "model": "fashn-ai/fashn-vton-1.5"
+    },
+    "class_type": "FashnVtonLoader",
+    "_meta": {
+      "title": "(Down)load Fashn VTON"
+    }
+  },
+  "5": {
+    "inputs": {
+      "garment_photo_type": "model",
+      "category": "one-pieces",
+      "skip_cfg_last_n_steps": 1,
+      "segmentation_free": true,
+      "steps": 30,
+      "cfg": 2,
+      "seed": 554787050336877,
+      "keep_model_loaded": false,
+      "pose_source": "auto",
+      "parser_backend": "fashn_human_parser",
+      "pipeline": [
+        "4",
+        0
+      ],
+      "person_image": [
+        "2",
+        0
+      ],
+      "garment_image": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "FashnVtonInference",
+    "_meta": {
+      "title": "Fashn VTON Inference"
+    }
+  },
+  "6": {
+    "inputs": {
+      "images": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "PreviewImage",
+    "_meta": {
+      "title": "Preview Image"
+    }
+  }
+}

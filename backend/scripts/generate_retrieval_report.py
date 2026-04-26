@@ -2,14 +2,14 @@
 Generate retrieval benchmark report comparing multiple embedders.
 
 Runs image-to-image and text-to-image retrieval tests on the demo user photos
-against the DeepFashion InShop catalogue, computing similarity scores,
-then writes docs/Embedder/retrieval_comparison.md.
+against the DeepFashion InShop catalogue, then writes docs/Embedder/retrieval_comparison.md.
 
 Usage:
     uv run python -m backend.scripts.generate_retrieval_report
 """
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 import numpy as np
@@ -24,11 +24,7 @@ if ENV_FILE.exists():
     for line in ENV_FILE.read_text().strip().split("\n"):
         if line.startswith("HF_TOKEN="):
             HF_TOKEN = line.split("=", 1)[1].strip()
-            print(f"[DEBUG] Loaded HF_TOKEN: {HF_TOKEN[:10]}...")
             break
-
-if not HF_TOKEN:
-    print("[WARNING] No HF_TOKEN found in .env file!")
 
 EMBEDDINGS_PATH = Path("data/embeddings.npy")
 METADATA_PATH = Path("data/index_metadata.json")
@@ -42,6 +38,7 @@ MODELS = {
         "model_id": "facebook/dinov3-vith16plus-pretrain-lvd1689m",
         "embed_dim": 1280,
         "use_token": True,
+        "text_encoder": False,
     },
     "fashion_clip": {
         "label": "FashionCLIP ViT-B/32",
@@ -59,17 +56,40 @@ MODELS = {
 }
 
 TEXT_QUERIES = [
-    "red summer dress",
-    "blue denim jeans",
-    "black formal jacket",
-    "white cotton t-shirt",
-    "green casual sweater",
-    "brown leather boots",
+    "women's red summer dress",
+    "men's blue denim jeans",
+    "men's black formal jacket",
+    "men's white cotton t-shirt",
+    "women's green casual sweater",
+    "women's brown leather boots",
+    "women's floral blouse",
+    "men's chino trousers",
 ]
 
-# Intra-catalogue sample size for similarity estimation
-INTRA_SIM_SAMPLE = 200
+# Labels used to annotate retrieved catalogue images (gender + garment type).
+# Only used by annotate_hits() — separate from TEXT_QUERIES benchmark.
+ANNOTATION_LABELS = [
+    "men's jacket", "men's vest", "men's coat",
+    "men's jeans", "men's denim pants",
+    "men's dress shirt", "men's polo shirt", "men's casual shirt",
+    "men's t-shirt", "men's tank top",
+    "men's trousers", "men's chinos", "men's shorts",
+    "men's sweater", "men's hoodie",
+    "women's jacket", "women's coat", "women's blazer",
+    "women's jeans", "women's denim shorts",
+    "women's blouse", "women's shirt",
+    "women's t-shirt", "women's top", "women's tank top",
+    "women's trousers", "women's shorts",
+    "women's dress", "women's skirt",
+    "women's sweater", "women's cardigan",
+    "shoes", "boots", "sneakers", "sandals",
+]
 
+# Paths to full-catalogue embeddings for CLIP models (built by build_clip_indices.py)
+CLIP_INDEX = {k: Path(f"data/embeddings_{k}.npy") for k in MODELS if k != "dinov3_vith16"}
+
+
+# ── Model loading ──────────────────────────────────────────────────────────────
 
 def load_catalogue() -> tuple[np.ndarray, list[dict]]:
     embeddings = np.load(EMBEDDINGS_PATH)
@@ -84,24 +104,18 @@ def load_model(model_key: str):
     info = MODELS[model_key]
     model_id = info["model_id"]
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"[DEBUG] Loading {model_key}: {model_id} → {device}")
 
     if "dinov3" in model_key:
         token = HF_TOKEN if (info.get("use_token") and HF_TOKEN) else None
-        print(f"[DEBUG] DINOv3: using token = {token is not None}")
         processor = AutoProcessor.from_pretrained(model_id, token=token)
         model = AutoModel.from_pretrained(model_id, token=token).to(device)
     elif "marqo" in model_key:
-        print(f"[DEBUG] Marqo: trust_remote_code=True")
-        processor = AutoProcessor.from_pretrained(model_id, trust_remote_code=True)
-        # Use device_map at load time to avoid meta-tensor .cuda() crash
-        model = AutoModel.from_pretrained(
-            model_id,
-            trust_remote_code=True,
-            device_map=device,
-        )
+        import open_clip
+        model, _, preprocess_val = open_clip.create_model_and_transforms(f"hf-hub:{model_id}")
+        tokenizer = open_clip.get_tokenizer(f"hf-hub:{model_id}")
+        model = model.to(device)
+        processor = {"preprocess": preprocess_val, "tokenizer": tokenizer}
     else:
-        print(f"[DEBUG] Fashion-CLIP: CLIPProcessor/CLIPModel")
         processor = CLIPProcessor.from_pretrained(model_id)
         model = CLIPModel.from_pretrained(model_id).to(device)
 
@@ -109,369 +123,333 @@ def load_model(model_key: str):
     return model, processor, device
 
 
+def _purge_cuda():
+    import gc
+    import torch
+    gc.collect()
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+        torch.cuda.empty_cache()
+
+
+# ── Embedding helpers ──────────────────────────────────────────────────────────
+
 def _normalise(vec: np.ndarray) -> np.ndarray:
     n = np.linalg.norm(vec)
     return vec / n if n > 0 else vec
 
 
-def embed_image(model_key: str, model, processor, device: str, img: Image.Image) -> np.ndarray:
+def embed_image(model_key: str, model, processor, device, img: Image.Image) -> np.ndarray:
     import torch
-    inputs = processor(images=img, return_tensors="pt")
-    inputs = {k: v.to(device) for k, v in inputs.items()}
     with torch.no_grad():
         if "dinov3" in model_key:
-            out = model(**inputs)
-            vec = out.last_hidden_state[:, 0, :].cpu().numpy()[0]
+            inputs = {k: v.to(device) for k, v in processor(images=img, return_tensors="pt").items()}
+            vec = model(**inputs).last_hidden_state[:, 0, :].cpu().numpy()[0]
+            return _normalise(vec.astype(np.float32))
+        elif "marqo" in model_key:
+            # OpenCLIP API: preprocess → tensor, encode_image with normalize=True
+            img_tensor = processor["preprocess"](img).unsqueeze(0).to(device)
+            vec = model.encode_image(img_tensor, normalize=True).cpu().numpy()[0]
+            return vec.astype(np.float32)
         else:
-            vec = model.get_image_features(**inputs).cpu().numpy()[0]
-    return _normalise(vec.astype(np.float32))
+            inputs = {k: v.to(device) for k, v in processor(images=img, return_tensors="pt").items()}
+            out = model.get_image_features(**inputs)
+            vec = out.cpu().numpy()[0] if hasattr(out, "cpu") else (
+                out.image_embeds if hasattr(out, "image_embeds") else out.pooler_output
+            ).cpu().numpy()[0]
+            return _normalise(vec.astype(np.float32))
 
 
-def embed_text(model_key: str, model, processor, device: str, text: str) -> np.ndarray:
+def embed_text(model_key: str, model, processor, device, text: str) -> np.ndarray:
     import torch
-    inputs = processor(text=text, return_tensors="pt", padding=True)
-    inputs = {k: v.to(device) for k, v in inputs.items()}
     with torch.no_grad():
-        vec = model.get_text_features(**inputs).cpu().numpy()[0]
-    return _normalise(vec.astype(np.float32))
+        if "marqo" in model_key:
+            # OpenCLIP API: tokenizer returns tensor directly, encode_text with normalize=True
+            tokens = processor["tokenizer"]([text]).to(device)
+            vec = model.encode_text(tokens, normalize=True).cpu().numpy()[0]
+            return vec.astype(np.float32)
+        else:
+            inputs = {k: v.to(device) for k, v in processor(text=text, return_tensors="pt", padding=True).items()}
+            out = model.get_text_features(**inputs)
+            vec = out.cpu().numpy()[0] if hasattr(out, "cpu") else (
+                out.text_embeds if hasattr(out, "text_embeds") else out.pooler_output
+            ).cpu().numpy()[0]
+            return _normalise(vec.astype(np.float32))
 
 
-def build_cat_embeddings(model_key: str, model, processor, device: str, metadata: list, max_items: int = 500) -> tuple[np.ndarray, list[int]]:
-    """Embed a catalogue subset. Returns (embeddings, valid_meta_indices)."""
-    vecs, indices = [], []
-    for i, meta in enumerate(tqdm(metadata[:max_items], desc="  Embedding catalogue", leave=False)):
-        img_path = Path(meta["path"])  # path already relative to repo root
-        if not img_path.exists():
+
+def top_k_results(sims: np.ndarray, meta_indices: list[int], metadata: list, top_k: int = 5) -> list[dict]:
+    top_idx = np.argsort(sims)[::-1][:top_k]
+    return [
+        {
+            "rank": i + 1,
+            "idx": meta_indices[idx],
+            "cat_emb_pos": int(idx),          # position in cat_embs, used for text annotation
+            "score": float(sims[idx]),
+            "category": metadata[meta_indices[idx]].get("category_name", "unknown"),
+        }
+        for i, idx in enumerate(top_idx)
+    ]
+
+
+def annotate_hits(hits: list[dict], cat_embs: np.ndarray, annotation_embs: dict) -> None:
+    """For each hit, find the closest ANNOTATION_LABEL in embedding space and store it in-place."""
+    if not annotation_embs:
+        return
+    labels = list(annotation_embs.keys())
+    label_matrix = np.array([annotation_embs[l] for l in labels], dtype=np.float32)  # (N_labels, dim)
+    for h in hits:
+        pos = h.get("cat_emb_pos")
+        if pos is None or pos >= len(cat_embs):
             continue
+        sims = label_matrix @ cat_embs[pos]   # (N_labels,)
+        best = int(np.argmax(sims))
+        h["clip_annotation"] = labels[best]
+        h["clip_annotation_score"] = float(sims[best])
+
+
+# ── Pipeline ───────────────────────────────────────────────────────────────────
+
+def run_model(model_key: str, gallery_embeddings: np.ndarray, metadata: list,
+              demo_users: list[Path]) -> dict:
+    """Run all image and text queries for one model. Returns per-model result dict."""
+    info = MODELS[model_key]
+    result = {"image": {}, "text": {}}
+
+    try:
+        model, processor, device = load_model(model_key)
+    except Exception as e:
+        print(f"  LOAD FAILED: {e}")
+        return result
+
+    # Load full-catalogue embeddings
+    if "dinov3" in model_key:
+        cat_embs = gallery_embeddings
+    else:
+        index_path = CLIP_INDEX[model_key]
+        if not index_path.exists():
+            print(f"  Index manquant — lance d'abord :")
+            print(f"    uv run python -m backend.scripts.build_clip_indices --model {model_key}")
+            del model, processor
+            _purge_cuda()
+            return result
+        cat_embs = np.load(index_path)
+
+    cat_indices = list(range(len(metadata)))
+    print(f"  Catalogue: {cat_embs.shape[0]:,} items × {cat_embs.shape[1]} dims")
+
+    # Pre-compute embeddings for annotation labels and text queries (text-encoder models only)
+    annotation_embs: dict[str, np.ndarray] = {}
+    text_query_embs: dict[str, np.ndarray] = {}
+    if info.get("text_encoder"):
+        print("  Pre-computing annotation label embeddings...")
+        for label in ANNOTATION_LABELS:
+            annotation_embs[label] = embed_text(model_key, model, processor, device, label)
+        print("  Pre-computing text query embeddings...")
+        for qt in TEXT_QUERIES:
+            text_query_embs[qt] = embed_text(model_key, model, processor, device, qt)
+
+    # Image queries
+    for user_path in tqdm(demo_users, desc="  Image queries", leave=False):
+        user_key = user_path.stem
         try:
-            img = Image.open(img_path).convert("RGB")
-            vecs.append(embed_image(model_key, model, processor, device, img))
-            indices.append(i)
-        except Exception:
-            pass
-    return np.array(vecs, dtype=np.float32) if vecs else np.empty((0,)), indices
+            query = embed_image(model_key, model, processor, device, Image.open(user_path).convert("RGB"))
+            sims = np.dot(cat_embs, query)
+            hits = top_k_results(sims, cat_indices, metadata)
+            annotate_hits(hits, cat_embs, annotation_embs)
+            result["image"][user_key] = {"top1_score": hits[0]["score"], "top5": hits}
+            annotation = f" → '{hits[0].get('clip_annotation', '')}'" if annotation_embs else ""
+            print(f"    {user_key}: {hits[0]['score']:.3f} ({hits[0]['category']}){annotation}")
+        except Exception as e:
+            result["image"][user_key] = {"error": str(e)}
+            print(f"    {user_key}: ERROR — {e}")
+
+    # Text queries (only for models with a text encoder)
+    if info.get("text_encoder"):
+        for query_text in tqdm(TEXT_QUERIES, desc="  Text queries", leave=False):
+            try:
+                query = text_query_embs[query_text]  # already computed above
+                sims = np.dot(cat_embs, query)
+                hits = top_k_results(sims, cat_indices, metadata)
+                annotate_hits(hits, cat_embs, annotation_embs)
+                result["text"][query_text] = {"top1_score": hits[0]["score"], "top1_category": hits[0]["category"], "top5": hits}
+                print(f"    '{query_text}': {hits[0]['score']:.3f} ({hits[0]['category']})")
+            except Exception as e:
+                result["text"][query_text] = {"error": str(e)}
+                print(f"    '{query_text}': ERROR — {e}")
+
+    del model, processor
+    _purge_cuda()
+    return result
 
 
-def compute_intra_sim(embeddings: np.ndarray) -> float:
-    n = embeddings.shape[0]
-    if n < 2:
-        return float("nan")
-    sample = embeddings if n <= 500 else embeddings[np.random.choice(n, 500, replace=False)]
-    sims = np.dot(sample, sample.T)
-    mask = ~np.eye(sample.shape[0], dtype=bool)
-    return float(np.mean(sims[mask]))
+# ── Report ─────────────────────────────────────────────────────────────────────
+
+EXAMPLES_DIR = REPORT_FILE.parent / "examples"
+TOP_K_SHOW = 3     # how many retrieved images to show per cell
 
 
-def run_image_retrieval(model_key: str, model, processor, device: str,
-                        user_img: Image.Image, gallery_embeddings: np.ndarray,
-                        metadata: list, top_k: int = 5) -> list[dict]:
-    query = embed_image(model_key, model, processor, device, user_img)
-
-    if model_key == "dinov3_vith16" and gallery_embeddings.shape[1] == 1280:
-        sims = np.dot(gallery_embeddings, query)
-        top_idx = np.argsort(sims)[::-1][:top_k]
-        return [
-            {"rank": i + 1, "idx": int(idx), "score": float(sims[idx]),
-             "category": metadata[idx].get("category_name", "unknown")}
-            for i, idx in enumerate(top_idx)
-        ]
-
-    # CLIP/SigLIP: embed catalogue subset
-    cat_embs, cat_meta_indices = build_cat_embeddings(model_key, model, processor, device, metadata)
-    if len(cat_embs) == 0:
-        return []
-    sims = np.dot(cat_embs, query)
-    top_idx = np.argsort(sims)[::-1][:top_k]
-    return [
-        {"rank": i + 1, "idx": cat_meta_indices[idx], "score": float(sims[idx]),
-         "category": metadata[cat_meta_indices[idx]].get("category_name", "unknown")}
-        for i, idx in enumerate(top_idx)
-    ]
+def _stage(src: str, name: str) -> str:
+    """Copy src (relative to repo root) into EXAMPLES_DIR, return markdown-relative path."""
+    import shutil
+    EXAMPLES_DIR.mkdir(exist_ok=True)
+    src_path = Path(src)
+    dest = EXAMPLES_DIR / (name + src_path.suffix)
+    if src_path.exists() and not dest.exists():
+        shutil.copy2(src_path, dest)
+    return f"examples/{dest.name}"
 
 
-def run_text_retrieval(model_key: str, model, processor, device: str,
-                       text_query: str, metadata: list, top_k: int = 5) -> list[dict]:
-    query = embed_text(model_key, model, processor, device, text_query)
-    cat_embs, cat_meta_indices = build_cat_embeddings(model_key, model, processor, device, metadata)
-    if len(cat_embs) == 0:
-        return []
-    sims = np.dot(cat_embs, query)
-    top_idx = np.argsort(sims)[::-1][:top_k]
-    return [
-        {"rank": i + 1, "idx": cat_meta_indices[idx], "score": float(sims[idx]),
-         "category": metadata[cat_meta_indices[idx]].get("category_name", "unknown")}
-        for i, idx in enumerate(top_idx)
-    ]
+def _img(rel_path: str, alt: str = "") -> str:
+    return f"![{alt}]({rel_path})"
 
 
-# ── Report generator ───────────────────────────────────────────────────────────
+def _hits_cell(hits: list[dict], metadata: list, cell_id: str) -> str:
+    """Build a cell showing top-k retrieved images with score + CLIP annotation."""
+    parts = []
+    for h in hits[:TOP_K_SHOW]:
+        idx = h.get("idx")
+        score = h.get("score", 0)
+        cat = h.get("category", "?")
+        annotation = h.get("clip_annotation")
+        if idx is not None and idx < len(metadata):
+            src = metadata[idx].get("path", "")
+            if src:
+                staged = _stage(src, f"cat_{idx}")
+                alt = f"{score:.3f} — {cat}" + (f", {annotation}" if annotation else "")
+                caption = f"{score:.3f} — {cat}"
+                if annotation:
+                    caption += f"<br><sub><i>{annotation}</i></sub>"
+                parts.append(_img(staged, alt) + f"<br><sub>{caption}</sub>")
+            else:
+                parts.append(f"idx {idx}")
+        else:
+            parts.append("—")
+    return " ".join(parts) if parts else "—"
 
-def write_report(results: dict, metadata: list) -> None:
-    from datetime import date
 
+def write_report(results: dict, metadata: list, demo_users: list[Path]) -> None:
     model_keys = list(MODELS.keys())
-    model_labels = {k: MODELS[k]["label"] for k in model_keys}
-    demo_users = sorted(DEMO_DIR.glob("user_*.png"))
-    user_names = [p.name for p in demo_users]
-
+    text_model_keys = [k for k in model_keys if MODELS[k].get("text_encoder")]
     lines = []
 
-    def h(text): lines.append(text)
-    def sep(): lines.append("")
-    def rule(): lines.append("---"); sep()
+    lines.append("# Rapport de benchmark — Retrieval")
+    lines.append("")
 
-    h(f"# Retrieval Benchmark — Model Comparison")
-    sep()
-    h(f"**Date:** {date.today()}  ")
-    h(f"**Catalogue:** DeepFashion InShop ({len(metadata):,} items)  ")
-    h(f"**Queries:** {len(demo_users)} demo user photos + {len(TEXT_QUERIES)} text queries  ")
-    h(f"**Metric:** Top-1 cosine similarity  ")
-    sep()
-    rule()
-
-    # ── Section 1: Models ──
-    h("## Models")
-    sep()
-    h("| Key | Label | Embed dim | Text encoder |")
-    h("|-----|-------|-----------|-------------|")
+    # ── Tableau 1 : Conditions ─────────────────────────────────────────────
+    lines.append("## Conditions du benchmark")
+    lines.append("")
+    lines.append("| Paramètre | Valeur |")
+    lines.append("|-----------|--------|")
+    lines.append(f"| Date | {date.today()} |")
+    lines.append(f"| Catalogue | DeepFashion InShop — {len(metadata):,} articles |")
+    lines.append(f"| Données client (requêtes image) | {len(demo_users)} photos utilisateurs |")
+    lines.append(f"| Requêtes texte | {len(TEXT_QUERIES)} requêtes |")
+    lines.append(f"| Métrique | Similarité cosinus Top-{TOP_K_SHOW} |")
+    lines.append(f"| Catalogue CLIP | index complet ({len(metadata):,} articles) |")
+    lines.append("")
+    lines.append("**Modèles évalués :**")
+    lines.append("")
+    lines.append("| Modèle | Dimension | Encodeur texte |")
+    lines.append("|--------|-----------|----------------|")
     for k, info in MODELS.items():
-        te = "✓" if info.get("text_encoder") else "—"
-        h(f"| `{k}` | {info['label']} | {info['embed_dim']} | {te} |")
-    sep()
-    rule()
+        te = "Oui" if info.get("text_encoder") else "Non"
+        lines.append(f"| {info['label']} | {info['embed_dim']} | {te} |")
+    lines.append("")
 
-    # ── Section 2: Intra-catalogue similarity ──
-    h("## 1. Intra-Catalogue Similarity")
-    sep()
-    h("> Mean pairwise cosine similarity within a catalogue sample.")
-    h("> **Lower = better separation.** ≥ 0.55 signals near-collapse.")
-    sep()
-    h("| Model | Mean sim (↓ better) | Interpretation |")
-    h("|-------|---------------------|----------------|")
-    intra = results.get("intra_catalogue_sim", {})
-    for k in model_keys:
-        v = intra.get(k)
-        if v is None or not isinstance(v, (int, float)):
-            h(f"| {model_labels[k]} | — | — |")
-            continue
-        if v < 0.35:
-            interp = "Good separation"
-        elif v < 0.50:
-            interp = "Moderate separation"
-        else:
-            interp = "Near-collapse"
-        h(f"| {model_labels[k]} | {v:.4f} | {interp} |")
-    sep()
-    rule()
+    # ── Tableau 2a : Requêtes image ────────────────────────────────────────
+    lines.append("## Résultats comparatifs — Requêtes image")
+    lines.append("")
+    lines.append("> Chaque cellule montre les 3 premières images retrouvées (score cosinus en dessous).")
+    lines.append("")
 
-    # ── Section 3: Image-to-image top-1 scores ──
-    h("## 2. Image-to-Image Retrieval — Top-1 Scores")
-    sep()
-    h("> Cosine similarity between user photo embedding and best catalogue match.")
-    sep()
-
-    i2i = results.get("image_to_image", {})
-    header = "| User | " + " | ".join(model_labels[k] for k in model_keys) + " |"
-    divider = "|------|" + "|".join(["------"] * len(model_keys)) + "|"
-    h(header)
-    h(divider)
+    header_cols = ["Donnée client"] + [MODELS[k]["label"] for k in model_keys]
+    lines.append("| " + " | ".join(header_cols) + " |")
+    lines.append("|" + "|".join([":---:"] * len(header_cols)) + "|")
 
     col_scores = {k: [] for k in model_keys}
-    for user_name in user_names:
-        user_key = user_name.replace(".png", "")
-        row = f"| {user_name} |"
+    for user_path in demo_users:
+        user_key = user_path.stem
+        staged_query = _stage(str(user_path), user_key)
+        query_img = _img(staged_query, user_key) + f"<br><sub>{user_key}</sub>"
+        row = [query_img]
         for k in model_keys:
-            entry = i2i.get(k, {}).get(user_key, {})
-            if "top1_score" in entry:
-                s = entry["top1_score"]
-                col_scores[k].append(s)
-                row += f" {s:.3f} |"
+            entry = results.get(k, {}).get("image", {}).get(user_key, {})
+            if "top5" in entry:
+                col_scores[k].append(entry["top1_score"])
+                row.append(_hits_cell(entry["top5"], metadata, f"{k}_{user_key}"))
             elif "error" in entry:
-                row += " ERROR |"
+                row.append("erreur")
             else:
-                row += " — |"
-        h(row)
+                row.append("—")
+        lines.append("| " + " | ".join(row) + " |")
 
-    # Average row
-    avg_row = "| **Average** |"
+    avg_row = ["**Score moyen Top-1**"]
     for k in model_keys:
         vals = col_scores[k]
-        avg_row += f" **{np.mean(vals):.3f}** |" if vals else " — |"
-    h(avg_row)
-    sep()
-    rule()
+        avg_row.append(f"**{np.mean(vals):.3f}**" if vals else "—")
+    lines.append("| " + " | ".join(avg_row) + " |")
+    lines.append("")
 
-    # ── Section 4: Retrieved categories ──
-    h("## 3. Retrieved Categories (Image-to-Image, Top-1)")
-    sep()
-    h("| User | " + " | ".join(model_labels[k] for k in model_keys) + " |")
-    h("|------|" + "|".join(["------"] * len(model_keys)) + "|")
-    for user_name in user_names:
-        user_key = user_name.replace(".png", "")
-        row = f"| {user_name} |"
-        for k in model_keys:
-            entry = i2i.get(k, {}).get(user_key, {})
-            top5 = entry.get("top5", [])
-            cat = top5[0].get("category", "—") if top5 else "—"
-            row += f" {cat} |"
-        h(row)
-    sep()
-    rule()
-
-    # ── Section 5: Text-to-image ──
-    text_model_keys = [k for k in model_keys if MODELS[k].get("text_encoder")]
+    # ── Tableau 2b : Requêtes texte ────────────────────────────────────────
     if text_model_keys:
-        h("## 4. Text-to-Image Retrieval — Top-1 Scores")
-        sep()
-        h("> Cosine similarity between text query embedding and best catalogue image match.")
-        sep()
-        h("| Query | " + " | ".join(model_labels[k] for k in text_model_keys) + " |")
-        h("|-------|" + "|".join(["------"] * len(text_model_keys)) + "|")
-        t2i = results.get("text_to_image", {})
-        for query in TEXT_QUERIES:
-            row = f"| {query} |"
+        lines.append("## Résultats comparatifs — Requêtes texte")
+        lines.append("")
+        lines.append("> Modèles avec encodeur texte uniquement.")
+        lines.append("")
+
+        text_header = ["Requête"] + [MODELS[k]["label"] for k in text_model_keys]
+        lines.append("| " + " | ".join(text_header) + " |")
+        lines.append("|" + "|".join([":---:"] * len(text_header)) + "|")
+
+        text_col_scores = {k: [] for k in text_model_keys}
+        for query_text in TEXT_QUERIES:
+            row = [f'**"{query_text}"**']
             for k in text_model_keys:
-                entry = t2i.get(k, {}).get(query, {})
-                if "top1_score" in entry:
-                    row += f" {entry['top1_score']:.3f} ({entry.get('top1_category', '?')}) |"
+                entry = results.get(k, {}).get("text", {}).get(query_text, {})
+                if "top5" in entry:
+                    text_col_scores[k].append(entry["top1_score"])
+                    row.append(_hits_cell(entry["top5"], metadata, f"{k}_{query_text[:20]}"))
                 elif "error" in entry:
-                    row += " ERROR |"
+                    row.append("erreur")
                 else:
-                    row += " — |"
-            h(row)
-        sep()
-        rule()
+                    row.append("—")
+            lines.append("| " + " | ".join(row) + " |")
 
-    # ── Section 6: Visual comparison ──
-    h("## 5. Visual Comparison per User (Top-3 matches, DINOv3 ViT-H)")
-    sep()
-    h("> Query photo and top-3 retrieved catalogue items using DINOv3 ViT-H (production embedder).")
-    sep()
-
-    for user_name in user_names:
-        user_key = user_name.replace(".png", "")
-        h(f"### {user_name}")
-        sep()
-
-        # User photo
-        h(f"**Query:** `demo/{user_name}`")
-        sep()
-
-        top5 = i2i.get("dinov3_vith16", {}).get(user_key, {}).get("top5", [])
-        if top5:
-            h("| Rank | Score | Category | Path |")
-            h("|------|-------|----------|------|")
-            for r in top5[:3]:
-                idx = r["idx"]
-                cat = metadata[idx].get("category_name", "?") if idx < len(metadata) else "?"
-                path = metadata[idx].get("path", "?") if idx < len(metadata) else "?"
-                h(f"| #{r['rank']} | {r['score']:.3f} | {cat} | `{path}` |")
-        else:
-            h("_No results_")
-        sep()
+        avg_text_row = ["**Score moyen Top-1**"]
+        for k in text_model_keys:
+            vals = text_col_scores[k]
+            avg_text_row.append(f"**{np.mean(vals):.3f}**" if vals else "—")
+        lines.append("| " + " | ".join(avg_text_row) + " |")
+        lines.append("")
 
     REPORT_FILE.write_text("\n".join(lines))
-    print(f"\n  Report written → {REPORT_FILE}")
+    print(f"\nRapport → {REPORT_FILE}")
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
-    print("Loading catalogue embeddings...")
+    _purge_cuda()
+
+    print("Chargement du catalogue...")
     gallery_embeddings, metadata = load_catalogue()
-    print(f"  Catalogue: {gallery_embeddings.shape[0]:,} items, {gallery_embeddings.shape[1]} dims")
+    print(f"  {gallery_embeddings.shape[0]:,} articles, {gallery_embeddings.shape[1]} dims")
 
     demo_users = sorted(DEMO_DIR.glob("user_*.png"))
-    print(f"  Demo users: {len(demo_users)}")
+    print(f"  {len(demo_users)} photos utilisateurs")
 
-    results = {"image_to_image": {}, "text_to_image": {}, "intra_catalogue_sim": {}}
+    results = {}
 
-    # ── Image-to-image ──────────────────────────────────────────────────────
-    print("\n=== IMAGE-TO-IMAGE RETRIEVAL ===")
-    for model_key in tqdm(MODELS.keys(), desc="Models"):
-        print(f"\n{model_key}:")
-        results["image_to_image"][model_key] = {}
+    for model_key in MODELS:
+        print(f"\n=== {MODELS[model_key]['label']} ===")
+        results[model_key] = run_model(model_key, gallery_embeddings, metadata, demo_users)
 
-        try:
-            model, processor, device = load_model(model_key)
-        except Exception as e:
-            print(f"  LOAD FAILED: {e}")
-            continue
-
-        for user_path in tqdm(demo_users, leave=False):
-            user_num = user_path.stem.split("_")[1]
-            user_key = f"user_{user_num}"
-            user_img = Image.open(user_path).convert("RGB")
-            try:
-                ret = run_image_retrieval(model_key, model, processor, device,
-                                          user_img, gallery_embeddings, metadata)
-                if ret:
-                    results["image_to_image"][model_key][user_key] = {
-                        "top1_score": ret[0]["score"],
-                        "top5": ret,
-                    }
-                    print(f"  user_{user_num}: {ret[0]['score']:.3f} ({ret[0]['category']})")
-                else:
-                    results["image_to_image"][model_key][user_key] = {"error": "empty"}
-                    print(f"  user_{user_num}: no results")
-            except Exception as e:
-                print(f"  user_{user_num}: ERROR — {e}")
-                results["image_to_image"][model_key][user_key] = {"error": str(e)}
-
-        # Intra-catalogue sim on embedded sample
-        print(f"  Computing intra-catalogue similarity…")
-        try:
-            if model_key == "dinov3_vith16":
-                intra = compute_intra_sim(gallery_embeddings)
-            else:
-                cat_embs, _ = build_cat_embeddings(model_key, model, processor, device,
-                                                   metadata, max_items=INTRA_SIM_SAMPLE)
-                intra = compute_intra_sim(cat_embs) if len(cat_embs) > 1 else float("nan")
-            results["intra_catalogue_sim"][model_key] = intra
-            print(f"  Intra-catalogue sim: {intra:.4f}")
-        except Exception as e:
-            print(f"  Intra-sim ERROR: {e}")
-
-        del model, processor  # free VRAM before next model
-
-    # ── Text-to-image ───────────────────────────────────────────────────────
-    print("\n=== TEXT-TO-IMAGE RETRIEVAL ===")
-    text_model_keys = [k for k in MODELS if MODELS[k].get("text_encoder")]
-    for model_key in tqdm(text_model_keys, desc="Text models"):
-        print(f"\n{model_key}:")
-        results["text_to_image"][model_key] = {}
-
-        try:
-            model, processor, device = load_model(model_key)
-        except Exception as e:
-            print(f"  LOAD FAILED: {e}")
-            continue
-
-        for text_query in tqdm(TEXT_QUERIES, leave=False):
-            try:
-                ret = run_text_retrieval(model_key, model, processor, device, text_query, metadata)
-                if ret:
-                    results["text_to_image"][model_key][text_query] = {
-                        "top1_score": ret[0]["score"],
-                        "top1_category": ret[0]["category"],
-                        "top5": ret,
-                    }
-                    print(f"  '{text_query}': {ret[0]['score']:.3f} ({ret[0]['category']})")
-                else:
-                    results["text_to_image"][model_key][text_query] = {"error": "empty"}
-                    print(f"  '{text_query}': no results")
-            except Exception as e:
-                print(f"  '{text_query}': ERROR — {e}")
-                results["text_to_image"][model_key][text_query] = {"error": str(e)}
-
-        del model, processor
-
-    # ── Save JSON + MD ──────────────────────────────────────────────────────
-    print("\n=== SAVING RESULTS ===")
+    print("\nSauvegarde des résultats...")
     RESULTS_FILE.write_text(json.dumps(results, indent=2, default=str))
     print(f"  JSON → {RESULTS_FILE}")
 
-    write_report(results, metadata)
+    write_report(results, metadata, demo_users)
 
 
 if __name__ == "__main__":

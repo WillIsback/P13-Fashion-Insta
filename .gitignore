@@ -1,7 +1,44 @@
+# Python
 .venv/
 __pycache__/
 *.pyc
-data/
+*.pyo
+*.pyd
 *.egg-info/
+dist/
+build/
+
+# Environment
+.env
+
+# Test / lint cache
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Dataset & generated data (large — download separately, see README)
+dataset/
+data/
+
+# Model weights (download separately, see README)
+*.pt
+*.pth
+*.onnx
+*.bin
+
+# Temp image formats
 *.webp
+
+# IDE / tools
+.idea/
+.vscode/
+docs/.obsidian/
+.claude/
+
+# Internal planning docs (not for public repo)
+docs/superpowers/
+docs/Scrumboard/
+docs/gpu_cost_scalability_study.md
+docs/segmentation/
+docs/vto/models-specs/
+"docs/vto/Virtual Try-On Research.md"

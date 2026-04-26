@@ -2,157 +2,157 @@
   "user_1": [
     {
       "rank": 1,
-      "score": 0.7,
+      "img": "user_1_garment_1.jpg",
+      "score": 0.7777,
       "category_name": "Jackets_Coats",
       "fashn_category": "tops",
-      "archetype": "Streetwear",
-      "img": "user_1_garment_1.jpg"
+      "archetype": "Streetwear"
     },
     {
       "rank": 2,
-      "score": 0.682,
+      "img": "user_1_garment_2.jpg",
+      "score": 0.7457,
       "category_name": "Jackets_Coats",
       "fashn_category": "tops",
-      "archetype": "Streetwear",
-      "img": "user_1_garment_2.jpg"
+      "archetype": "Streetwear"
     },
     {
       "rank": 3,
-      "score": 0.679,
+      "img": "user_1_garment_3.jpg",
+      "score": 0.7255,
       "category_name": "Jackets_Coats",
       "fashn_category": "tops",
-      "archetype": "Streetwear",
-      "img": "user_1_garment_3.jpg"
+      "archetype": "Streetwear"
     }
   ],
   "user_2": [
     {
       "rank": 1,
-      "score": 0.529,
-      "category_name": "Denim",
+      "img": "user_2_garment_1.jpg",
+      "score": 0.6675,
+      "category_name": "Pants",
       "fashn_category": "bottoms",
-      "archetype": "Casual chic",
-      "img": "user_2_garment_1.jpg"
+      "archetype": "Professionnel moderne"
     },
     {
       "rank": 2,
-      "score": 0.527,
-      "category_name": "Denim",
+      "img": "user_2_garment_2.jpg",
+      "score": 0.6567,
+      "category_name": "Pants",
       "fashn_category": "bottoms",
-      "archetype": "Casual chic",
-      "img": "user_2_garment_2.jpg"
+      "archetype": "Professionnel moderne"
     },
     {
       "rank": 3,
-      "score": 0.523,
+      "img": "user_2_garment_3.jpg",
+      "score": 0.6464,
       "category_name": "Denim",
       "fashn_category": "bottoms",
-      "archetype": "Casual chic",
-      "img": "user_2_garment_3.jpg"
+      "archetype": "Casual chic"
     }
   ],
   "user_3": [
     {
       "rank": 1,
-      "score": 0.485,
-      "category_name": "Tees_Tanks",
-      "fashn_category": "tops",
-      "archetype": "Casual chic",
-      "img": "user_3_garment_1.jpg"
+      "img": "user_3_garment_1.jpg",
+      "score": 0.6849,
+      "category_name": "Shorts",
+      "fashn_category": "bottoms",
+      "archetype": "Streetwear"
     },
     {
       "rank": 2,
-      "score": 0.477,
-      "category_name": "Denim",
-      "fashn_category": "bottoms",
-      "archetype": "Casual chic",
-      "img": "user_3_garment_2.jpg"
+      "img": "user_3_garment_2.jpg",
+      "score": 0.6848,
+      "category_name": "Tees_Tanks",
+      "fashn_category": "tops",
+      "archetype": "Casual chic"
     },
     {
       "rank": 3,
-      "score": 0.475,
+      "img": "user_3_garment_3.jpg",
+      "score": 0.6824,
       "category_name": "Tees_Tanks",
       "fashn_category": "tops",
-      "archetype": "Casual chic",
-      "img": "user_3_garment_3.jpg"
+      "archetype": "Casual chic"
     }
   ],
   "user_4": [
     {
       "rank": 1,
-      "score": 0.456,
+      "img": "user_4_garment_1.jpg",
+      "score": 0.7471,
       "category_name": "Skirts",
       "fashn_category": "bottoms",
-      "archetype": "Boh\u00e8me f\u00e9minine",
-      "img": "user_4_garment_1.jpg"
+      "archetype": "Boh\u00e8me f\u00e9minine"
     },
     {
       "rank": 2,
-      "score": 0.452,
+      "img": "user_4_garment_2.jpg",
+      "score": 0.7327,
       "category_name": "Dresses",
       "fashn_category": "one-pieces",
-      "archetype": "Boh\u00e8me f\u00e9minine",
-      "img": "user_4_garment_2.jpg"
+      "archetype": "Boh\u00e8me f\u00e9minine"
     },
     {
       "rank": 3,
-      "score": 0.449,
+      "img": "user_4_garment_3.jpg",
+      "score": 0.7311,
       "category_name": "Dresses",
       "fashn_category": "one-pieces",
-      "archetype": "Boh\u00e8me f\u00e9minine",
-      "img": "user_4_garment_3.jpg"
+      "archetype": "Boh\u00e8me f\u00e9minine"
     }
   ],
   "user_5": [
     {
       "rank": 1,
-      "score": 0.345,
+      "img": "user_5_garment_1.jpg",
+      "score": 0.7126,
       "category_name": "Shorts",
       "fashn_category": "bottoms",
-      "archetype": "Streetwear",
-      "img": "user_5_garment_1.jpg"
+      "archetype": "Streetwear"
     },
     {
       "rank": 2,
-      "score": 0.345,
-      "category_name": "Shorts",
-      "fashn_category": "bottoms",
-      "archetype": "Streetwear",
-      "img": "user_5_garment_2.jpg"
+      "img": "user_5_garment_2.jpg",
+      "score": 0.7094,
+      "category_name": "Blouses_Shirts",
+      "fashn_category": "tops",
+      "archetype": "Professionnel moderne"
     },
     {
       "rank": 3,
-      "score": 0.344,
-      "category_name": "Tees_Tanks",
-      "fashn_category": "tops",
-      "archetype": "Casual chic",
-      "img": "user_5_garment_3.jpg"
+      "img": "user_5_garment_3.jpg",
+      "score": 0.7052,
+      "category_name": "Rompers_Jumpsuits",
+      "fashn_category": "one-pieces",
+      "archetype": "Boh\u00e8me f\u00e9minine"
     }
   ],
   "user_6": [
     {
       "rank": 1,
-      "score": 0.62,
+      "img": "user_6_garment_1.jpg",
+      "score": 0.7267,
       "category_name": "Dresses",
       "fashn_category": "one-pieces",
-      "archetype": "Boh\u00e8me f\u00e9minine",
-      "img": "user_6_garment_1.jpg"
+      "archetype": "Boh\u00e8me f\u00e9minine"
     },
     {
       "rank": 2,
-      "score": 0.618,
+      "img": "user_6_garment_2.jpg",
+      "score": 0.717,
       "category_name": "Dresses",
       "fashn_category": "one-pieces",
-      "archetype": "Boh\u00e8me f\u00e9minine",
-      "img": "user_6_garment_2.jpg"
+      "archetype": "Boh\u00e8me f\u00e9minine"
     },
     {
       "rank": 3,
-      "score": 0.594,
+      "img": "user_6_garment_3.jpg",
+      "score": 0.7044,
       "category_name": "Dresses",
       "fashn_category": "one-pieces",
-      "archetype": "Boh\u00e8me f\u00e9minine",
-      "img": "user_6_garment_3.jpg"
+      "archetype": "Boh\u00e8me f\u00e9minine"
     }
   ]
 }

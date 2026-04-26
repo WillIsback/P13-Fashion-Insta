@@ -8,10 +8,10 @@ from pathlib import Path
 import gradio as gr
 from PIL import Image
 
-from backend.core.retrieval import recommend
+from backend.core.retrieval import recommend, recommend_from_text
 from backend.core.tryon import build_qwen_prompt, run_tryon
 
-EMBEDDINGS_PATH = Path("data/embeddings.npy")
+EMBEDDINGS_PATH = Path("data/embeddings_marqo_fashion_siglip.npy")
 METADATA_PATH = Path("data/index_metadata.json")
 TOP_N = 5
 
@@ -95,7 +95,7 @@ CSS = """
 def _check_index():
     if not EMBEDDINGS_PATH.exists() or not METADATA_PATH.exists():
         raise RuntimeError(
-            "Catalogue index not found. Run: uv run python -m backend.scripts.build_index"
+            "Catalogue index not found. Run: uv run python -m backend.scripts.build_clip_indices --model marqo_fashion_siglip"
         )
 
 
@@ -107,15 +107,8 @@ def find_image_path(meta: dict) -> Path:
     return p
 
 
-def on_upload(user_photo):
-    """Called when user uploads a photo. Returns recommendation gallery data."""
-    _check_index()
-    if user_photo is None:
-        return gr.update(visible=False), [], gr.update(visible=False), [], gr.update(visible=False), gr.update(value=None), []
-
-    img = user_photo.convert("RGB")
-    results = recommend(img, EMBEDDINGS_PATH, METADATA_PATH, top_n=TOP_N)
-
+def _build_gallery_outputs(results: list):
+    """Shared helper — build gallery items and return the 7 UI outputs."""
     gallery_items = []
     for r in results:
         meta = r["metadata"]
@@ -135,6 +128,24 @@ def on_upload(user_photo):
         gr.update(value=None),
         results,
     )
+
+
+def on_upload(user_photo):
+    """Called when user uploads a photo. Returns recommendation gallery data."""
+    _check_index()
+    if user_photo is None:
+        return gr.update(visible=False), [], gr.update(visible=False), [], gr.update(visible=False), gr.update(value=None), []
+    results = recommend(user_photo.convert("RGB"), EMBEDDINGS_PATH, METADATA_PATH, top_n=TOP_N)
+    return _build_gallery_outputs(results)
+
+
+def on_text_search(text_query: str):
+    """Called when user submits a text query. Returns recommendation gallery data."""
+    _check_index()
+    if not text_query or not text_query.strip():
+        return gr.update(visible=False), [], gr.update(visible=False), [], gr.update(visible=False), gr.update(value=None), []
+    results = recommend_from_text(text_query.strip(), EMBEDDINGS_PATH, METADATA_PATH, top_n=TOP_N)
+    return _build_gallery_outputs(results)
 
 
 def on_select(user_photo, gallery_data: list, catalogue_results: list, evt: gr.SelectData):
@@ -204,14 +215,24 @@ def build_ui() -> gr.Blocks:
         # ── Row 1: Upload + Gallery ──────────────────────────────────────────
         with gr.Row(equal_height=False):
             with gr.Column(scale=1, min_width=260, elem_id="upload-card"):
-                gr.Markdown("### Your photo")
-                user_photo = gr.Image(
-                    label=None,
-                    type="pil",
-                    show_label=False,
-                    height=340,
-                )
-                upload_btn = gr.Button("Find similar items", variant="primary", size="lg")
+                with gr.Tabs():
+                    with gr.Tab("📷 Photo"):
+                        user_photo = gr.Image(
+                            label=None,
+                            type="pil",
+                            show_label=False,
+                            height=280,
+                        )
+                        upload_btn = gr.Button("Find similar items", variant="primary", size="lg")
+
+                    with gr.Tab("✏️ Text"):
+                        text_query = gr.Textbox(
+                            label=None,
+                            placeholder="e.g. women's red summer dress",
+                            lines=3,
+                            show_label=False,
+                        )
+                        text_search_btn = gr.Button("Search", variant="primary", size="lg")
 
             with gr.Column(scale=3):
                 with gr.Column(visible=False) as results_section:
@@ -307,6 +328,18 @@ def build_ui() -> gr.Blocks:
         upload_btn.click(
             fn=on_upload,
             inputs=[user_photo],
+            outputs=[results_section, gallery, tryon_section, gallery_data, error_box, tryon_result, catalogue_results],
+        )
+
+        text_search_btn.click(
+            fn=on_text_search,
+            inputs=[text_query],
+            outputs=[results_section, gallery, tryon_section, gallery_data, error_box, tryon_result, catalogue_results],
+        )
+
+        text_query.submit(
+            fn=on_text_search,
+            inputs=[text_query],
             outputs=[results_section, gallery, tryon_section, gallery_data, error_box, tryon_result, catalogue_results],
         )
 

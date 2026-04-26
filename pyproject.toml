@@ -14,10 +14,14 @@ dependencies = [
     "scikit-learn>=1.4.0",
     "gradio>=4.40.0",
     "requests>=2.31.0",
+    "open-clip-torch>=3.3.0",
+    "accelerate>=0.30.0",
+    "tqdm>=4.66.0",
 ]
 
 [dependency-groups]
 dev = [
+    "kaggle>=2.1.0",
     "pytest>=8.0.0",
     "ruff>=0.15.12",
 ]

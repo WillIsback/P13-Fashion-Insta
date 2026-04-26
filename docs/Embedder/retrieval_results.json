@@ -1,0 +1,1675 @@
+{
+  "dinov3_vith16": {
+    "image": {
+      "user_1": {
+        "top1_score": 0.6433864831924438,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 6415,
+            "cat_emb_pos": 6415,
+            "score": 0.6433864831924438,
+            "category": "Jackets_Coats"
+          },
+          {
+            "rank": 2,
+            "idx": 8724,
+            "cat_emb_pos": 8724,
+            "score": 0.6401880979537964,
+            "category": "Skirts"
+          },
+          {
+            "rank": 3,
+            "idx": 6727,
+            "cat_emb_pos": 6727,
+            "score": 0.6265994310379028,
+            "category": "Jackets_Coats"
+          },
+          {
+            "rank": 4,
+            "idx": 6665,
+            "cat_emb_pos": 6665,
+            "score": 0.6153943538665771,
+            "category": "Jackets_Coats"
+          },
+          {
+            "rank": 5,
+            "idx": 6668,
+            "cat_emb_pos": 6668,
+            "score": 0.6118378639221191,
+            "category": "Jackets_Coats"
+          }
+        ]
+      },
+      "user_2": {
+        "top1_score": 0.4668809473514557,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 38,
+            "cat_emb_pos": 38,
+            "score": 0.4668809473514557,
+            "category": "Denim"
+          },
+          {
+            "rank": 2,
+            "idx": 66,
+            "cat_emb_pos": 66,
+            "score": 0.4563261866569519,
+            "category": "Denim"
+          },
+          {
+            "rank": 3,
+            "idx": 8,
+            "cat_emb_pos": 8,
+            "score": 0.4317525029182434,
+            "category": "Denim"
+          },
+          {
+            "rank": 4,
+            "idx": 62,
+            "cat_emb_pos": 62,
+            "score": 0.41025781631469727,
+            "category": "Denim"
+          },
+          {
+            "rank": 5,
+            "idx": 579,
+            "cat_emb_pos": 579,
+            "score": 0.40959739685058594,
+            "category": "Shorts"
+          }
+        ]
+      },
+      "user_3": {
+        "top1_score": 0.3644457161426544,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 4099,
+            "cat_emb_pos": 4099,
+            "score": 0.3644457161426544,
+            "category": "Denim"
+          },
+          {
+            "rank": 2,
+            "idx": 10387,
+            "cat_emb_pos": 10387,
+            "score": 0.3437567353248596,
+            "category": "Tees_Tanks"
+          },
+          {
+            "rank": 3,
+            "idx": 11791,
+            "cat_emb_pos": 11791,
+            "score": 0.33646082878112793,
+            "category": "Tees_Tanks"
+          },
+          {
+            "rank": 4,
+            "idx": 11167,
+            "cat_emb_pos": 11167,
+            "score": 0.3362995982170105,
+            "category": "Tees_Tanks"
+          },
+          {
+            "rank": 5,
+            "idx": 6130,
+            "cat_emb_pos": 6130,
+            "score": 0.3342536687850952,
+            "category": "Graphic_Tees"
+          }
+        ]
+      },
+      "user_4": {
+        "top1_score": 0.41675376892089844,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 5404,
+            "cat_emb_pos": 5404,
+            "score": 0.41675376892089844,
+            "category": "Dresses"
+          },
+          {
+            "rank": 2,
+            "idx": 8826,
+            "cat_emb_pos": 8826,
+            "score": 0.41662681102752686,
+            "category": "Skirts"
+          },
+          {
+            "rank": 3,
+            "idx": 5920,
+            "cat_emb_pos": 5920,
+            "score": 0.4151628613471985,
+            "category": "Dresses"
+          },
+          {
+            "rank": 4,
+            "idx": 4357,
+            "cat_emb_pos": 4357,
+            "score": 0.4142323136329651,
+            "category": "Dresses"
+          },
+          {
+            "rank": 5,
+            "idx": 10930,
+            "cat_emb_pos": 10930,
+            "score": 0.4128042459487915,
+            "category": "Tees_Tanks"
+          }
+        ]
+      },
+      "user_5": {
+        "top1_score": 0.46242547035217285,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 8287,
+            "cat_emb_pos": 8287,
+            "score": 0.46242547035217285,
+            "category": "Shorts"
+          },
+          {
+            "rank": 2,
+            "idx": 11166,
+            "cat_emb_pos": 11166,
+            "score": 0.42374345660209656,
+            "category": "Tees_Tanks"
+          },
+          {
+            "rank": 3,
+            "idx": 4099,
+            "cat_emb_pos": 4099,
+            "score": 0.42102953791618347,
+            "category": "Denim"
+          },
+          {
+            "rank": 4,
+            "idx": 10553,
+            "cat_emb_pos": 10553,
+            "score": 0.4072033762931824,
+            "category": "Tees_Tanks"
+          },
+          {
+            "rank": 5,
+            "idx": 7848,
+            "cat_emb_pos": 7848,
+            "score": 0.40689390897750854,
+            "category": "Shorts"
+          }
+        ]
+      },
+      "user_6": {
+        "top1_score": 0.5293649435043335,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 5262,
+            "cat_emb_pos": 5262,
+            "score": 0.5293649435043335,
+            "category": "Dresses"
+          },
+          {
+            "rank": 2,
+            "idx": 5501,
+            "cat_emb_pos": 5501,
+            "score": 0.5273016691207886,
+            "category": "Dresses"
+          },
+          {
+            "rank": 3,
+            "idx": 5685,
+            "cat_emb_pos": 5685,
+            "score": 0.5240993499755859,
+            "category": "Dresses"
+          },
+          {
+            "rank": 4,
+            "idx": 4796,
+            "cat_emb_pos": 4796,
+            "score": 0.5074350237846375,
+            "category": "Dresses"
+          },
+          {
+            "rank": 5,
+            "idx": 4239,
+            "cat_emb_pos": 4239,
+            "score": 0.4941147565841675,
+            "category": "Dresses"
+          }
+        ]
+      }
+    },
+    "text": {}
+  },
+  "fashion_clip": {
+    "image": {
+      "user_1": {
+        "top1_score": 0.6946211457252502,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 6372,
+            "cat_emb_pos": 6372,
+            "score": 0.6946211457252502,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's jacket",
+            "clip_annotation_score": 0.275651216506958
+          },
+          {
+            "rank": 2,
+            "idx": 6416,
+            "cat_emb_pos": 6416,
+            "score": 0.6642144322395325,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's skirt",
+            "clip_annotation_score": 0.2772665321826935
+          },
+          {
+            "rank": 3,
+            "idx": 6415,
+            "cat_emb_pos": 6415,
+            "score": 0.6388536691665649,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's skirt",
+            "clip_annotation_score": 0.2745414078235626
+          },
+          {
+            "rank": 4,
+            "idx": 3550,
+            "cat_emb_pos": 3550,
+            "score": 0.6368647217750549,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's skirt",
+            "clip_annotation_score": 0.28766798973083496
+          },
+          {
+            "rank": 5,
+            "idx": 9921,
+            "cat_emb_pos": 9921,
+            "score": 0.6350579261779785,
+            "category": "Sweatshirts_Hoodies",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.276326984167099
+          }
+        ]
+      },
+      "user_2": {
+        "top1_score": 0.587797224521637,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 27,
+            "cat_emb_pos": 27,
+            "score": 0.587797224521637,
+            "category": "Denim",
+            "clip_annotation": "men's jeans",
+            "clip_annotation_score": 0.30550694465637207
+          },
+          {
+            "rank": 2,
+            "idx": 762,
+            "cat_emb_pos": 762,
+            "score": 0.5810922980308533,
+            "category": "Shorts",
+            "clip_annotation": "men's shorts",
+            "clip_annotation_score": 0.30976390838623047
+          },
+          {
+            "rank": 3,
+            "idx": 291,
+            "cat_emb_pos": 291,
+            "score": 0.5787177681922913,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.3026624321937561
+          },
+          {
+            "rank": 4,
+            "idx": 289,
+            "cat_emb_pos": 289,
+            "score": 0.5771797299385071,
+            "category": "Pants",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.2887677550315857
+          },
+          {
+            "rank": 5,
+            "idx": 761,
+            "cat_emb_pos": 761,
+            "score": 0.5733997821807861,
+            "category": "Shorts",
+            "clip_annotation": "men's shorts",
+            "clip_annotation_score": 0.30993252992630005
+          }
+        ]
+      },
+      "user_3": {
+        "top1_score": 0.6848949790000916,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 8263,
+            "cat_emb_pos": 8263,
+            "score": 0.6848949790000916,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.3253558278083801
+          },
+          {
+            "rank": 2,
+            "idx": 8401,
+            "cat_emb_pos": 8401,
+            "score": 0.6736047863960266,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.3214019536972046
+          },
+          {
+            "rank": 3,
+            "idx": 8262,
+            "cat_emb_pos": 8262,
+            "score": 0.6686873435974121,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.32740074396133423
+          },
+          {
+            "rank": 4,
+            "idx": 12594,
+            "cat_emb_pos": 12594,
+            "score": 0.6640769243240356,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.3322538435459137
+          },
+          {
+            "rank": 5,
+            "idx": 10224,
+            "cat_emb_pos": 10224,
+            "score": 0.6638667583465576,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.306166410446167
+          }
+        ]
+      },
+      "user_4": {
+        "top1_score": 0.638412594795227,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 5075,
+            "cat_emb_pos": 5075,
+            "score": 0.638412594795227,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.3077090084552765
+          },
+          {
+            "rank": 2,
+            "idx": 5298,
+            "cat_emb_pos": 5298,
+            "score": 0.6327283382415771,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.2920515239238739
+          },
+          {
+            "rank": 3,
+            "idx": 6372,
+            "cat_emb_pos": 6372,
+            "score": 0.6305943727493286,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's jacket",
+            "clip_annotation_score": 0.275651216506958
+          },
+          {
+            "rank": 4,
+            "idx": 5741,
+            "cat_emb_pos": 5741,
+            "score": 0.6296859979629517,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.30886510014533997
+          },
+          {
+            "rank": 5,
+            "idx": 5743,
+            "cat_emb_pos": 5743,
+            "score": 0.6288304924964905,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.3120375871658325
+          }
+        ]
+      },
+      "user_5": {
+        "top1_score": 0.713428795337677,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 8263,
+            "cat_emb_pos": 8263,
+            "score": 0.713428795337677,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.3253558278083801
+          },
+          {
+            "rank": 2,
+            "idx": 7445,
+            "cat_emb_pos": 7445,
+            "score": 0.6975340843200684,
+            "category": "Rompers_Jumpsuits",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.29062801599502563
+          },
+          {
+            "rank": 3,
+            "idx": 10730,
+            "cat_emb_pos": 10730,
+            "score": 0.6955817937850952,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.32925984263420105
+          },
+          {
+            "rank": 4,
+            "idx": 1959,
+            "cat_emb_pos": 1959,
+            "score": 0.6825082302093506,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.3195691406726837
+          },
+          {
+            "rank": 5,
+            "idx": 12193,
+            "cat_emb_pos": 12193,
+            "score": 0.6815170645713806,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's skirt",
+            "clip_annotation_score": 0.288138210773468
+          }
+        ]
+      },
+      "user_6": {
+        "top1_score": 0.6833966970443726,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 4520,
+            "cat_emb_pos": 4520,
+            "score": 0.6833966970443726,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.2682715654373169
+          },
+          {
+            "rank": 2,
+            "idx": 5767,
+            "cat_emb_pos": 5767,
+            "score": 0.6816725730895996,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.3258596658706665
+          },
+          {
+            "rank": 3,
+            "idx": 4997,
+            "cat_emb_pos": 4997,
+            "score": 0.6704287528991699,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.3049776554107666
+          },
+          {
+            "rank": 4,
+            "idx": 4511,
+            "cat_emb_pos": 4511,
+            "score": 0.6558265686035156,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.28988486528396606
+          },
+          {
+            "rank": 5,
+            "idx": 4529,
+            "cat_emb_pos": 4529,
+            "score": 0.6497199535369873,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.30248284339904785
+          }
+        ]
+      }
+    },
+    "text": {
+      "women's red summer dress": {
+        "top1_score": 0.3496946692466736,
+        "top1_category": "Dresses",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 4985,
+            "cat_emb_pos": 4985,
+            "score": 0.3496946692466736,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.30626097321510315
+          },
+          {
+            "rank": 2,
+            "idx": 5612,
+            "cat_emb_pos": 5612,
+            "score": 0.34677931666374207,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.3076844811439514
+          },
+          {
+            "rank": 3,
+            "idx": 5280,
+            "cat_emb_pos": 5280,
+            "score": 0.34538236260414124,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.31455132365226746
+          },
+          {
+            "rank": 4,
+            "idx": 5965,
+            "cat_emb_pos": 5965,
+            "score": 0.3445904850959778,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.3017277717590332
+          },
+          {
+            "rank": 5,
+            "idx": 5469,
+            "cat_emb_pos": 5469,
+            "score": 0.34388846158981323,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.27705782651901245
+          }
+        ]
+      },
+      "men's blue denim jeans": {
+        "top1_score": 0.3371121287345886,
+        "top1_category": "Denim",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 21,
+            "cat_emb_pos": 21,
+            "score": 0.3371121287345886,
+            "category": "Denim",
+            "clip_annotation": "men's denim pants",
+            "clip_annotation_score": 0.32748645544052124
+          },
+          {
+            "rank": 2,
+            "idx": 40,
+            "cat_emb_pos": 40,
+            "score": 0.3310728967189789,
+            "category": "Denim",
+            "clip_annotation": "men's jeans",
+            "clip_annotation_score": 0.330011785030365
+          },
+          {
+            "rank": 3,
+            "idx": 58,
+            "cat_emb_pos": 58,
+            "score": 0.32581275701522827,
+            "category": "Denim",
+            "clip_annotation": "men's jeans",
+            "clip_annotation_score": 0.315319299697876
+          },
+          {
+            "rank": 4,
+            "idx": 48,
+            "cat_emb_pos": 48,
+            "score": 0.3239566385746002,
+            "category": "Denim",
+            "clip_annotation": "men's jeans",
+            "clip_annotation_score": 0.31979745626449585
+          },
+          {
+            "rank": 5,
+            "idx": 23,
+            "cat_emb_pos": 23,
+            "score": 0.32304584980010986,
+            "category": "Denim",
+            "clip_annotation": "men's jeans",
+            "clip_annotation_score": 0.3205795884132385
+          }
+        ]
+      },
+      "men's black formal jacket": {
+        "top1_score": 0.32798388600349426,
+        "top1_category": "Suiting",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 783,
+            "cat_emb_pos": 783,
+            "score": 0.32798388600349426,
+            "category": "Suiting",
+            "clip_annotation": "men's jacket",
+            "clip_annotation_score": 0.2886534333229065
+          },
+          {
+            "rank": 2,
+            "idx": 96,
+            "cat_emb_pos": 96,
+            "score": 0.3217238485813141,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's jacket",
+            "clip_annotation_score": 0.2948588728904724
+          },
+          {
+            "rank": 3,
+            "idx": 97,
+            "cat_emb_pos": 97,
+            "score": 0.3170054852962494,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's jacket",
+            "clip_annotation_score": 0.3087891936302185
+          },
+          {
+            "rank": 4,
+            "idx": 137,
+            "cat_emb_pos": 137,
+            "score": 0.3055118918418884,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's jacket",
+            "clip_annotation_score": 0.3358769416809082
+          },
+          {
+            "rank": 5,
+            "idx": 111,
+            "cat_emb_pos": 111,
+            "score": 0.2979106307029724,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's jacket",
+            "clip_annotation_score": 0.27882516384124756
+          }
+        ]
+      },
+      "men's white cotton t-shirt": {
+        "top1_score": 0.34652137756347656,
+        "top1_category": "Tees_Tanks",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 1637,
+            "cat_emb_pos": 1637,
+            "score": 0.34652137756347656,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.2968314588069916
+          },
+          {
+            "rank": 2,
+            "idx": 1661,
+            "cat_emb_pos": 1661,
+            "score": 0.3433998227119446,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.2855592370033264
+          },
+          {
+            "rank": 3,
+            "idx": 1324,
+            "cat_emb_pos": 1324,
+            "score": 0.3426905572414398,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.2941574156284332
+          },
+          {
+            "rank": 4,
+            "idx": 1644,
+            "cat_emb_pos": 1644,
+            "score": 0.3411819338798523,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.29019778966903687
+          },
+          {
+            "rank": 5,
+            "idx": 1216,
+            "cat_emb_pos": 1216,
+            "score": 0.338935524225235,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.2747288644313812
+          }
+        ]
+      },
+      "women's green casual sweater": {
+        "top1_score": 0.34363439679145813,
+        "top1_category": "Sweaters",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 9646,
+            "cat_emb_pos": 9646,
+            "score": 0.34363439679145813,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.3199847340583801
+          },
+          {
+            "rank": 2,
+            "idx": 9098,
+            "cat_emb_pos": 9098,
+            "score": 0.3383241593837738,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.3105669319629669
+          },
+          {
+            "rank": 3,
+            "idx": 9288,
+            "cat_emb_pos": 9288,
+            "score": 0.33555877208709717,
+            "category": "Sweaters",
+            "clip_annotation": "women's cardigan",
+            "clip_annotation_score": 0.34938693046569824
+          },
+          {
+            "rank": 4,
+            "idx": 9632,
+            "cat_emb_pos": 9632,
+            "score": 0.3348733186721802,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.3245251476764679
+          },
+          {
+            "rank": 5,
+            "idx": 9503,
+            "cat_emb_pos": 9503,
+            "score": 0.33346083760261536,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.3147563934326172
+          }
+        ]
+      },
+      "women's brown leather boots": {
+        "top1_score": 0.2357458770275116,
+        "top1_category": "Blouses_Shirts",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 2617,
+            "cat_emb_pos": 2617,
+            "score": 0.2357458770275116,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "boots",
+            "clip_annotation_score": 0.33420825004577637
+          },
+          {
+            "rank": 2,
+            "idx": 4539,
+            "cat_emb_pos": 4539,
+            "score": 0.2300875186920166,
+            "category": "Dresses",
+            "clip_annotation": "women's cardigan",
+            "clip_annotation_score": 0.3015075623989105
+          },
+          {
+            "rank": 3,
+            "idx": 4130,
+            "cat_emb_pos": 4130,
+            "score": 0.2270241677761078,
+            "category": "Denim",
+            "clip_annotation": "women's trousers",
+            "clip_annotation_score": 0.2915273904800415
+          },
+          {
+            "rank": 4,
+            "idx": 9475,
+            "cat_emb_pos": 9475,
+            "score": 0.22636692225933075,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.29858335852622986
+          },
+          {
+            "rank": 5,
+            "idx": 8177,
+            "cat_emb_pos": 8177,
+            "score": 0.2233240306377411,
+            "category": "Shorts",
+            "clip_annotation": "women's cardigan",
+            "clip_annotation_score": 0.3030998110771179
+          }
+        ]
+      },
+      "women's floral blouse": {
+        "top1_score": 0.3543812036514282,
+        "top1_category": "Blouses_Shirts",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 2978,
+            "cat_emb_pos": 2978,
+            "score": 0.3543812036514282,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.3282855153083801
+          },
+          {
+            "rank": 2,
+            "idx": 3671,
+            "cat_emb_pos": 3671,
+            "score": 0.34505122900009155,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.3304396867752075
+          },
+          {
+            "rank": 3,
+            "idx": 1877,
+            "cat_emb_pos": 1877,
+            "score": 0.3448483347892761,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.3220440149307251
+          },
+          {
+            "rank": 4,
+            "idx": 2087,
+            "cat_emb_pos": 2087,
+            "score": 0.3447636663913727,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.31482449173927307
+          },
+          {
+            "rank": 5,
+            "idx": 4544,
+            "cat_emb_pos": 4544,
+            "score": 0.3440103828907013,
+            "category": "Dresses",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.3285941481590271
+          }
+        ]
+      },
+      "men's chino trousers": {
+        "top1_score": 0.3317735195159912,
+        "top1_category": "Pants",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 303,
+            "cat_emb_pos": 303,
+            "score": 0.3317735195159912,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.33799034357070923
+          },
+          {
+            "rank": 2,
+            "idx": 257,
+            "cat_emb_pos": 257,
+            "score": 0.3256361186504364,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.3285145163536072
+          },
+          {
+            "rank": 3,
+            "idx": 304,
+            "cat_emb_pos": 304,
+            "score": 0.3245140314102173,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.3322896361351013
+          },
+          {
+            "rank": 4,
+            "idx": 356,
+            "cat_emb_pos": 356,
+            "score": 0.32297438383102417,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.324496865272522
+          },
+          {
+            "rank": 5,
+            "idx": 290,
+            "cat_emb_pos": 290,
+            "score": 0.3209902048110962,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.33131498098373413
+          }
+        ]
+      }
+    }
+  },
+  "marqo_fashion_siglip": {
+    "image": {
+      "user_1": {
+        "top1_score": 0.7998104095458984,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 6416,
+            "cat_emb_pos": 6416,
+            "score": 0.7998104095458984,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's jacket",
+            "clip_annotation_score": 0.0440187081694603
+          },
+          {
+            "rank": 2,
+            "idx": 6415,
+            "cat_emb_pos": 6415,
+            "score": 0.7693794965744019,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's jacket",
+            "clip_annotation_score": 0.0401793010532856
+          },
+          {
+            "rank": 3,
+            "idx": 5509,
+            "cat_emb_pos": 5509,
+            "score": 0.760057806968689,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.03875353932380676
+          },
+          {
+            "rank": 4,
+            "idx": 6372,
+            "cat_emb_pos": 6372,
+            "score": 0.7584503889083862,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's jacket",
+            "clip_annotation_score": 0.05052344128489494
+          },
+          {
+            "rank": 5,
+            "idx": 4606,
+            "cat_emb_pos": 4606,
+            "score": 0.7388547658920288,
+            "category": "Dresses",
+            "clip_annotation": "women's skirt",
+            "clip_annotation_score": 0.05421002209186554
+          }
+        ]
+      },
+      "user_2": {
+        "top1_score": 0.6715735197067261,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 315,
+            "cat_emb_pos": 315,
+            "score": 0.6715735197067261,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.08993710577487946
+          },
+          {
+            "rank": 2,
+            "idx": 396,
+            "cat_emb_pos": 396,
+            "score": 0.6701370477676392,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.10162191838026047
+          },
+          {
+            "rank": 3,
+            "idx": 9,
+            "cat_emb_pos": 9,
+            "score": 0.6555519104003906,
+            "category": "Denim",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.09073980897665024
+          },
+          {
+            "rank": 4,
+            "idx": 110,
+            "cat_emb_pos": 110,
+            "score": 0.6438198089599609,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.08938786387443542
+          },
+          {
+            "rank": 5,
+            "idx": 1491,
+            "cat_emb_pos": 1491,
+            "score": 0.6365490555763245,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.06829722225666046
+          }
+        ]
+      },
+      "user_3": {
+        "top1_score": 0.7307747602462769,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 7848,
+            "cat_emb_pos": 7848,
+            "score": 0.7307747602462769,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.09272728115320206
+          },
+          {
+            "rank": 2,
+            "idx": 10729,
+            "cat_emb_pos": 10729,
+            "score": 0.7289959788322449,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.07937847822904587
+          },
+          {
+            "rank": 3,
+            "idx": 11352,
+            "cat_emb_pos": 11352,
+            "score": 0.7239762544631958,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.07259370386600494
+          },
+          {
+            "rank": 4,
+            "idx": 8188,
+            "cat_emb_pos": 8188,
+            "score": 0.7217035889625549,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.07689543813467026
+          },
+          {
+            "rank": 5,
+            "idx": 7846,
+            "cat_emb_pos": 7846,
+            "score": 0.7203696370124817,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.0804082602262497
+          }
+        ]
+      },
+      "user_4": {
+        "top1_score": 0.7581161260604858,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 8605,
+            "cat_emb_pos": 8605,
+            "score": 0.7581161260604858,
+            "category": "Skirts",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.04312480241060257
+          },
+          {
+            "rank": 2,
+            "idx": 4817,
+            "cat_emb_pos": 4817,
+            "score": 0.7514820098876953,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.045017629861831665
+          },
+          {
+            "rank": 3,
+            "idx": 5920,
+            "cat_emb_pos": 5920,
+            "score": 0.7445478439331055,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.05631761625409126
+          },
+          {
+            "rank": 4,
+            "idx": 5655,
+            "cat_emb_pos": 5655,
+            "score": 0.742558479309082,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.04046265408396721
+          },
+          {
+            "rank": 5,
+            "idx": 5746,
+            "cat_emb_pos": 5746,
+            "score": 0.7401961088180542,
+            "category": "Dresses",
+            "clip_annotation": "women's tank top",
+            "clip_annotation_score": 0.044863395392894745
+          }
+        ]
+      },
+      "user_5": {
+        "top1_score": 0.7209315299987793,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 7848,
+            "cat_emb_pos": 7848,
+            "score": 0.7209315299987793,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.09272728115320206
+          },
+          {
+            "rank": 2,
+            "idx": 8096,
+            "cat_emb_pos": 8096,
+            "score": 0.7191964983940125,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.08482861518859863
+          },
+          {
+            "rank": 3,
+            "idx": 4143,
+            "cat_emb_pos": 4143,
+            "score": 0.716312825679779,
+            "category": "Denim",
+            "clip_annotation": "women's jeans",
+            "clip_annotation_score": 0.06261666864156723
+          },
+          {
+            "rank": 4,
+            "idx": 10974,
+            "cat_emb_pos": 10974,
+            "score": 0.7138576507568359,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.06468997150659561
+          },
+          {
+            "rank": 5,
+            "idx": 10729,
+            "cat_emb_pos": 10729,
+            "score": 0.710308313369751,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.07937847822904587
+          }
+        ]
+      },
+      "user_6": {
+        "top1_score": 0.7203932404518127,
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 5889,
+            "cat_emb_pos": 5889,
+            "score": 0.7203932404518127,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.03472797945141792
+          },
+          {
+            "rank": 2,
+            "idx": 4865,
+            "cat_emb_pos": 4865,
+            "score": 0.6979434490203857,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.043815575540065765
+          },
+          {
+            "rank": 3,
+            "idx": 5507,
+            "cat_emb_pos": 5507,
+            "score": 0.6933560967445374,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.04424911364912987
+          },
+          {
+            "rank": 4,
+            "idx": 4430,
+            "cat_emb_pos": 4430,
+            "score": 0.6924346685409546,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.03291160613298416
+          },
+          {
+            "rank": 5,
+            "idx": 4624,
+            "cat_emb_pos": 4624,
+            "score": 0.6921631097793579,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.038995422422885895
+          }
+        ]
+      }
+    },
+    "text": {
+      "women's red summer dress": {
+        "top1_score": 0.09292200207710266,
+        "top1_category": "Blouses_Shirts",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 2194,
+            "cat_emb_pos": 2194,
+            "score": 0.09292200207710266,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.038756199181079865
+          },
+          {
+            "rank": 2,
+            "idx": 4985,
+            "cat_emb_pos": 4985,
+            "score": 0.09122209995985031,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.04044143855571747
+          },
+          {
+            "rank": 3,
+            "idx": 5919,
+            "cat_emb_pos": 5919,
+            "score": 0.08930081129074097,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.028166234493255615
+          },
+          {
+            "rank": 4,
+            "idx": 4310,
+            "cat_emb_pos": 4310,
+            "score": 0.08803907781839371,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.03489777445793152
+          },
+          {
+            "rank": 5,
+            "idx": 5280,
+            "cat_emb_pos": 5280,
+            "score": 0.08780422061681747,
+            "category": "Dresses",
+            "clip_annotation": "women's dress",
+            "clip_annotation_score": 0.0325874425470829
+          }
+        ]
+      },
+      "men's blue denim jeans": {
+        "top1_score": 0.10006719082593918,
+        "top1_category": "Denim",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 73,
+            "cat_emb_pos": 73,
+            "score": 0.10006719082593918,
+            "category": "Denim",
+            "clip_annotation": "men's denim pants",
+            "clip_annotation_score": 0.09326370060443878
+          },
+          {
+            "rank": 2,
+            "idx": 21,
+            "cat_emb_pos": 21,
+            "score": 0.09953713417053223,
+            "category": "Denim",
+            "clip_annotation": "men's denim pants",
+            "clip_annotation_score": 0.08464092016220093
+          },
+          {
+            "rank": 3,
+            "idx": 48,
+            "cat_emb_pos": 48,
+            "score": 0.09881551563739777,
+            "category": "Denim",
+            "clip_annotation": "men's denim pants",
+            "clip_annotation_score": 0.09512103348970413
+          },
+          {
+            "rank": 4,
+            "idx": 70,
+            "cat_emb_pos": 70,
+            "score": 0.09865786135196686,
+            "category": "Denim",
+            "clip_annotation": "men's jeans",
+            "clip_annotation_score": 0.08739635348320007
+          },
+          {
+            "rank": 5,
+            "idx": 74,
+            "cat_emb_pos": 74,
+            "score": 0.09686054289340973,
+            "category": "Denim",
+            "clip_annotation": "men's denim pants",
+            "clip_annotation_score": 0.08519220352172852
+          }
+        ]
+      },
+      "men's black formal jacket": {
+        "top1_score": 0.12147234380245209,
+        "top1_category": "Suiting",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 783,
+            "cat_emb_pos": 783,
+            "score": 0.12147234380245209,
+            "category": "Suiting",
+            "clip_annotation": "men's coat",
+            "clip_annotation_score": 0.07643046230077744
+          },
+          {
+            "rank": 2,
+            "idx": 96,
+            "cat_emb_pos": 96,
+            "score": 0.10688107460737228,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's coat",
+            "clip_annotation_score": 0.07186048477888107
+          },
+          {
+            "rank": 3,
+            "idx": 97,
+            "cat_emb_pos": 97,
+            "score": 0.09204097837209702,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's coat",
+            "clip_annotation_score": 0.07092882692813873
+          },
+          {
+            "rank": 4,
+            "idx": 776,
+            "cat_emb_pos": 776,
+            "score": 0.08806070685386658,
+            "category": "Suiting",
+            "clip_annotation": "men's coat",
+            "clip_annotation_score": 0.07198970764875412
+          },
+          {
+            "rank": 5,
+            "idx": 118,
+            "cat_emb_pos": 118,
+            "score": 0.07126996666193008,
+            "category": "Jackets_Vests",
+            "clip_annotation": "men's vest",
+            "clip_annotation_score": 0.1069256141781807
+          }
+        ]
+      },
+      "men's white cotton t-shirt": {
+        "top1_score": 0.11861453205347061,
+        "top1_category": "Tees_Tanks",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 1637,
+            "cat_emb_pos": 1637,
+            "score": 0.11861453205347061,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.07962397485971451
+          },
+          {
+            "rank": 2,
+            "idx": 1324,
+            "cat_emb_pos": 1324,
+            "score": 0.11766207218170166,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.07868272066116333
+          },
+          {
+            "rank": 3,
+            "idx": 1661,
+            "cat_emb_pos": 1661,
+            "score": 0.11472978442907333,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.07942593097686768
+          },
+          {
+            "rank": 4,
+            "idx": 1644,
+            "cat_emb_pos": 1644,
+            "score": 0.11408912390470505,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.08133978396654129
+          },
+          {
+            "rank": 5,
+            "idx": 1636,
+            "cat_emb_pos": 1636,
+            "score": 0.11407506465911865,
+            "category": "Tees_Tanks",
+            "clip_annotation": "men's t-shirt",
+            "clip_annotation_score": 0.07614687085151672
+          }
+        ]
+      },
+      "women's green casual sweater": {
+        "top1_score": 0.10241831094026566,
+        "top1_category": "Sweaters",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 9189,
+            "cat_emb_pos": 9189,
+            "score": 0.10241831094026566,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.0723334327340126
+          },
+          {
+            "rank": 2,
+            "idx": 9646,
+            "cat_emb_pos": 9646,
+            "score": 0.09981581568717957,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.06821928918361664
+          },
+          {
+            "rank": 3,
+            "idx": 9524,
+            "cat_emb_pos": 9524,
+            "score": 0.09917449951171875,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.07165447622537613
+          },
+          {
+            "rank": 4,
+            "idx": 9632,
+            "cat_emb_pos": 9632,
+            "score": 0.08967071771621704,
+            "category": "Sweaters",
+            "clip_annotation": "women's sweater",
+            "clip_annotation_score": 0.06960038840770721
+          },
+          {
+            "rank": 5,
+            "idx": 3853,
+            "cat_emb_pos": 3853,
+            "score": 0.08625173568725586,
+            "category": "Cardigans",
+            "clip_annotation": "women's cardigan",
+            "clip_annotation_score": 0.07944004237651825
+          }
+        ]
+      },
+      "women's brown leather boots": {
+        "top1_score": 0.05620206147432327,
+        "top1_category": "Jackets_Coats",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 6741,
+            "cat_emb_pos": 6741,
+            "score": 0.05620206147432327,
+            "category": "Jackets_Coats",
+            "clip_annotation": "women's coat",
+            "clip_annotation_score": 0.06649422645568848
+          },
+          {
+            "rank": 2,
+            "idx": 8177,
+            "cat_emb_pos": 8177,
+            "score": 0.05504178628325462,
+            "category": "Shorts",
+            "clip_annotation": "women's denim shorts",
+            "clip_annotation_score": 0.06864223629236221
+          },
+          {
+            "rank": 3,
+            "idx": 4539,
+            "cat_emb_pos": 4539,
+            "score": 0.04931407421827316,
+            "category": "Dresses",
+            "clip_annotation": "women's blazer",
+            "clip_annotation_score": 0.05448557436466217
+          },
+          {
+            "rank": 4,
+            "idx": 10780,
+            "cat_emb_pos": 10780,
+            "score": 0.04551810771226883,
+            "category": "Tees_Tanks",
+            "clip_annotation": "women's skirt",
+            "clip_annotation_score": 0.0584774911403656
+          },
+          {
+            "rank": 5,
+            "idx": 8838,
+            "cat_emb_pos": 8838,
+            "score": 0.04291202127933502,
+            "category": "Skirts",
+            "clip_annotation": "women's skirt",
+            "clip_annotation_score": 0.05326195806264877
+          }
+        ]
+      },
+      "women's floral blouse": {
+        "top1_score": 0.09669420123100281,
+        "top1_category": "Blouses_Shirts",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 3543,
+            "cat_emb_pos": 3543,
+            "score": 0.09669420123100281,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.05781036615371704
+          },
+          {
+            "rank": 2,
+            "idx": 8304,
+            "cat_emb_pos": 8304,
+            "score": 0.08979237079620361,
+            "category": "Shorts",
+            "clip_annotation": "women's shorts",
+            "clip_annotation_score": 0.047608546912670135
+          },
+          {
+            "rank": 3,
+            "idx": 2690,
+            "cat_emb_pos": 2690,
+            "score": 0.08973428606987,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.05574039742350578
+          },
+          {
+            "rank": 4,
+            "idx": 2842,
+            "cat_emb_pos": 2842,
+            "score": 0.0877111405134201,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's top",
+            "clip_annotation_score": 0.042983777821063995
+          },
+          {
+            "rank": 5,
+            "idx": 3508,
+            "cat_emb_pos": 3508,
+            "score": 0.08699950575828552,
+            "category": "Blouses_Shirts",
+            "clip_annotation": "women's blouse",
+            "clip_annotation_score": 0.045508503913879395
+          }
+        ]
+      },
+      "men's chino trousers": {
+        "top1_score": 0.1089424267411232,
+        "top1_category": "Pants",
+        "top5": [
+          {
+            "rank": 1,
+            "idx": 246,
+            "cat_emb_pos": 246,
+            "score": 0.1089424267411232,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.1079867035150528
+          },
+          {
+            "rank": 2,
+            "idx": 304,
+            "cat_emb_pos": 304,
+            "score": 0.10706431418657303,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.10686026513576508
+          },
+          {
+            "rank": 3,
+            "idx": 290,
+            "cat_emb_pos": 290,
+            "score": 0.10667835175991058,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.11191342771053314
+          },
+          {
+            "rank": 4,
+            "idx": 328,
+            "cat_emb_pos": 328,
+            "score": 0.10616829991340637,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.10838373750448227
+          },
+          {
+            "rank": 5,
+            "idx": 303,
+            "cat_emb_pos": 303,
+            "score": 0.10537227243185043,
+            "category": "Pants",
+            "clip_annotation": "men's chinos",
+            "clip_annotation_score": 0.10797849297523499
+          }
+        ]
+      }
+    }
+  }
+}
