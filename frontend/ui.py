@@ -74,7 +74,7 @@ def on_select(user_photo, gallery_data: list, catalogue_results: list, evt: gr.S
         return gr.update(visible=False), None, gr.update()
 
     selected_path, _ = gallery_data[evt.index]
-    meta = catalogue_results[evt.index]["metadata"] if catalogue_results else {}
+    meta = catalogue_results[evt.index]["metadata"] if len(catalogue_results) > evt.index else {}
     qwen_prompt = build_qwen_prompt(meta)
     return gr.update(visible=True), Image.open(selected_path), gr.update(value=qwen_prompt)
 
