@@ -22,6 +22,75 @@ WORKFLOW_FASHN = "phase_2/FasHN-VTO_api.json"
 WORKFLOW_QWEN = "phase_2/image_qwen_image_edit_2511_api.json"
 FASHN_CATEGORIES = ["tops", "bottoms", "one-pieces"]
 
+WORKFLOW_OPTIONS = ["Flux2-Klein", "FasHN-VTO", "Qwen-Image-Edit-2511"]
+
+WORKFLOW_META = {
+    "Flux2-Klein":          {"key": "flux",  "path": WORKFLOW_FLUX},
+    "FasHN-VTO":            {"key": "fashn", "path": WORKFLOW_FASHN},
+    "Qwen-Image-Edit-2511": {"key": "qwen",  "path": WORKFLOW_QWEN},
+}
+
+CSS = """
+/* ── Global ── */
+.gradio-container { max-width: 1280px !important; margin: 0 auto; }
+
+/* ── Upload card ── */
+#upload-card {
+    background: var(--background-fill-secondary);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+}
+
+/* ── Gallery ── */
+#results-gallery .thumbnail-item { cursor: pointer; }
+#results-gallery .thumbnail-item img {
+    transition: transform 0.15s ease;
+}
+#results-gallery .thumbnail-item:hover img { transform: scale(1.04); }
+
+/* ── Try-on panel ── */
+#tryon-panel {
+    border-top: 1px solid var(--border-color-primary);
+    padding-top: 16px;
+    margin-top: 8px;
+}
+
+/* ── Result image ── */
+#tryon-result img {
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+
+/* ── Selected preview ── */
+#selected-preview img {
+    border-radius: var(--radius-md);
+    border: 2px solid var(--border-color-accent);
+}
+
+/* ── Workflow radio ── */
+#workflow-radio .wrap { gap: 8px; }
+#workflow-radio label { cursor: pointer; }
+
+/* ── Error box ── */
+#error-box textarea {
+    color: var(--error-text-color, #b91c1c);
+    background: #fef2f2;
+    border-color: #fca5a5;
+    font-size: 0.875rem;
+}
+
+/* ── Status badge ── */
+.status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--primary-200);
+    color: var(--primary-700);
+}
+"""
+
 
 def _check_index():
     if not EMBEDDINGS_PATH.exists() or not METADATA_PATH.exists():
@@ -53,7 +122,7 @@ def on_upload(user_photo):
         img_path = find_image_path(meta)
         label = (
             f"{meta['category_name']} · {meta['fashn_category']}\n"
-            f"{meta['archetype']}\nScore: {r['score']:.2f}"
+            f"{meta['archetype']}  —  {r['score']:.2f}"
         )
         gallery_items.append((str(img_path), label))
 
@@ -79,38 +148,16 @@ def on_select(user_photo, gallery_data: list, catalogue_results: list, evt: gr.S
     return gr.update(visible=True), Image.open(selected_path), gr.update(value=qwen_prompt)
 
 
-def switch_workflow(current: dict):
-    """Cycle through Flux2-Klein → FasHN-VTO → Qwen → Flux2-Klein."""
-    if current["name"] == "Flux2-Klein":
-        return (
-            {"name": "FasHN-VTO", "path": WORKFLOW_FASHN},
-            gr.update(value="Switch to Qwen", variant="primary"),
-            gr.update(value="**Current: FasHN-VTO**"),
-            gr.update(visible=False),   # colour_input
-            gr.update(visible=True),    # category_input
-            gr.update(visible=False),   # prompt_input
-        )
-    elif current["name"] == "FasHN-VTO":
-        return (
-            {"name": "Qwen", "path": WORKFLOW_QWEN},
-            gr.update(value="Switch to Flux2-Klein", variant="secondary"),
-            gr.update(value="**Current: Qwen-Image-Edit-2511**"),
-            gr.update(visible=False),   # colour_input
-            gr.update(visible=False),   # category_input
-            gr.update(visible=True),    # prompt_input
-        )
-    else:  # Qwen
-        return (
-            {"name": "Flux2-Klein", "path": WORKFLOW_FLUX},
-            gr.update(value="Switch to FasHN-VTO", variant="secondary"),
-            gr.update(value="**Current: Flux2-Klein**"),
-            gr.update(visible=True),    # colour_input
-            gr.update(visible=False),   # category_input
-            gr.update(visible=False),   # prompt_input
-        )
+def on_workflow_change(workflow_name: str):
+    """Show/hide the correct input control for the selected workflow."""
+    return (
+        gr.update(visible=(workflow_name == "Flux2-Klein")),
+        gr.update(visible=(workflow_name == "FasHN-VTO")),
+        gr.update(visible=(workflow_name == "Qwen-Image-Edit-2511")),
+    )
 
 
-def on_try_on(user_photo, selected_item_img, colour_text, category, prompt_text, workflow_state: dict):
+def on_try_on(user_photo, selected_item_img, colour_text, category, prompt_text, workflow_name: str):
     """Submit try-on to ComfyUI and return the result image."""
     if user_photo is None or selected_item_img is None:
         return gr.update(value=None, visible=False), gr.update(visible=False)
@@ -118,34 +165,19 @@ def on_try_on(user_photo, selected_item_img, colour_text, category, prompt_text,
     user_img = user_photo.convert("RGB")
     item_img = selected_item_img.convert("RGB")
 
-    name = workflow_state["name"]
-    api_path = Path(workflow_state["path"])
+    meta = WORKFLOW_META[workflow_name]
+    api_path = Path(meta["path"])
 
     try:
-        if name == "FasHN-VTO":
-            result = run_tryon(
-                user_img=user_img,
-                item_img=item_img,
-                category=category or "tops",
-                workflow="fashn",
-                api_template_path=api_path,
-            )
-        elif name == "Qwen":
-            result = run_tryon(
-                user_img=user_img,
-                item_img=item_img,
-                prompt=prompt_text.strip() if prompt_text else "",
-                workflow="qwen",
-                api_template_path=api_path,
-            )
-        else:  # Flux2-Klein
-            result = run_tryon(
-                user_img=user_img,
-                item_img=item_img,
-                colour=colour_text.strip() if colour_text else "",
-                workflow="flux",
-                api_template_path=api_path,
-            )
+        result = run_tryon(
+            user_img=user_img,
+            item_img=item_img,
+            colour=colour_text.strip() if colour_text else "",
+            category=category or "tops",
+            prompt=prompt_text.strip() if prompt_text else "",
+            workflow=meta["key"],
+            api_template_path=api_path,
+        )
     except ConnectionError as e:
         return gr.update(value=None, visible=False), gr.update(value=str(e), visible=True)
     except TimeoutError as e:
@@ -157,63 +189,121 @@ def on_try_on(user_photo, selected_item_img, colour_text, category, prompt_text,
 
 
 def build_ui() -> gr.Blocks:
-    with gr.Blocks(title="Fashion Recommender PoC") as demo:
-        gr.Markdown("# Fashion Recommendation — Photo-Based PoC")
+    with gr.Blocks(
+        title="Fashion Recommender PoC",
+        theme=gr.themes.Soft(primary_hue="stone", neutral_hue="slate"),
+        css=CSS,
+        fill_width=False,
+    ) as demo:
 
-        with gr.Row():
-            with gr.Column():
-                user_photo = gr.Image(label="Upload your photo", type="pil")
-                upload_btn = gr.Button("Find similar items", variant="primary")
+        gr.Markdown(
+            "# Fashion Recommender\n"
+            "Upload a photo → pick a garment → try it on with any of the 3 VTO models."
+        )
 
-        error_box = gr.Textbox(visible=False, label="Error", interactive=False)
+        # ── Row 1: Upload + Gallery ──────────────────────────────────────────
+        with gr.Row(equal_height=False):
+            with gr.Column(scale=1, min_width=260, elem_id="upload-card"):
+                gr.Markdown("### Your photo")
+                user_photo = gr.Image(
+                    label=None,
+                    type="pil",
+                    show_label=False,
+                    height=340,
+                )
+                upload_btn = gr.Button("Find similar items", variant="primary", size="lg")
 
-        with gr.Column(visible=False) as results_section:
-            gr.Markdown("### Similar items from catalogue")
-            gallery = gr.Gallery(
-                label="Click an item to select it",
-                columns=5,
-                height=300,
-                allow_preview=False,
-            )
+            with gr.Column(scale=3):
+                with gr.Column(visible=False) as results_section:
+                    gr.Markdown("### Similar items — click one to try it on")
+                    gallery = gr.Gallery(
+                        label=None,
+                        show_label=False,
+                        elem_id="results-gallery",
+                        columns=5,
+                        rows=1,
+                        height=320,
+                        object_fit="contain",
+                        allow_preview=False,
+                    )
 
-        with gr.Column(visible=False) as tryon_section:
-            gr.Markdown("### Selected item")
-            with gr.Row():
-                selected_preview = gr.Image(label="Selected item", width=200, interactive=False, type="pil")
-                with gr.Column():
+        error_box = gr.Textbox(
+            visible=False,
+            label="Error",
+            interactive=False,
+            elem_id="error-box",
+        )
+
+        # ── Row 2: Try-on panel ───────────────────────────────────────────────
+        with gr.Column(visible=False, elem_id="tryon-panel") as tryon_section:
+            with gr.Row(equal_height=True):
+
+                # Selected item preview + controls
+                with gr.Column(scale=1, min_width=220):
+                    gr.Markdown("#### Selected garment")
+                    selected_preview = gr.Image(
+                        label=None,
+                        show_label=False,
+                        elem_id="selected-preview",
+                        interactive=False,
+                        type="pil",
+                        height=280,
+                    )
+                    size_input = gr.Dropdown(
+                        choices=SIZES,
+                        value="M",
+                        label="Size (display only)",
+                    )
+
+                # Workflow + controls
+                with gr.Column(scale=1, min_width=260):
+                    gr.Markdown("#### VTO model")
+                    workflow_radio = gr.Radio(
+                        choices=WORKFLOW_OPTIONS,
+                        value="Flux2-Klein",
+                        label=None,
+                        show_label=False,
+                        elem_id="workflow-radio",
+                    )
                     colour_input = gr.Textbox(
-                        label="Colour customisation (e.g. 'in red')",
-                        placeholder="Leave empty to keep original colour",
+                        label="Colour customisation",
+                        placeholder="e.g. 'in red' — leave empty to keep original",
                         visible=True,
                     )
                     category_input = gr.Dropdown(
                         choices=FASHN_CATEGORIES,
                         value="tops",
-                        label="Garment category (FasHN-VTO only)",
+                        label="Garment category",
                         visible=False,
                     )
                     prompt_input = gr.Textbox(
-                        label="Try-on prompt (Qwen)",
-                        placeholder="Auto-filled from garment annotations — edit freely",
+                        label="Try-on prompt",
+                        placeholder="Auto-filled from annotations — edit freely",
+                        lines=3,
                         visible=False,
                     )
-                    size_input = gr.Dropdown(choices=SIZES, value="M", label="Size (display only)")
-                    tryon_btn = gr.Button("Try it on", variant="primary")
+                    tryon_btn = gr.Button("Try it on ✦", variant="primary", size="lg")
 
-            gr.Markdown("### Try-on result")
-            tryon_result = gr.Image(label="Virtual try-on", interactive=False, type="pil")
-            with gr.Row():
-                approve_btn = gr.Button("Approve", variant="primary")
-                reject_btn = gr.Button("Try another")
+                # Result
+                with gr.Column(scale=2, min_width=320):
+                    gr.Markdown("#### Result")
+                    tryon_result = gr.Image(
+                        label=None,
+                        show_label=False,
+                        elem_id="tryon-result",
+                        interactive=False,
+                        type="pil",
+                        height=340,
+                    )
+                    with gr.Row():
+                        approve_btn = gr.Button("✓ Approve", variant="primary")
+                        reject_btn = gr.Button("✗ Try another", variant="secondary")
 
+        # ── State ────────────────────────────────────────────────────────────
         gallery_data = gr.State([])
         catalogue_results = gr.State([])
-        workflow_state = gr.State({"name": "Flux2-Klein", "path": WORKFLOW_FLUX})
 
-        with gr.Row():
-            workflow_toggle = gr.Button("Switch to FasHN-VTO", variant="secondary")
-            workflow_label = gr.Markdown("**Current: Flux2-Klein**")
-
+        # ── Event wiring ─────────────────────────────────────────────────────
         upload_btn.click(
             fn=on_upload,
             inputs=[user_photo],
@@ -226,9 +316,15 @@ def build_ui() -> gr.Blocks:
             outputs=[tryon_section, selected_preview, prompt_input],
         )
 
+        workflow_radio.change(
+            fn=on_workflow_change,
+            inputs=[workflow_radio],
+            outputs=[colour_input, category_input, prompt_input],
+        )
+
         tryon_btn.click(
             fn=on_try_on,
-            inputs=[user_photo, selected_preview, colour_input, category_input, prompt_input, workflow_state],
+            inputs=[user_photo, selected_preview, colour_input, category_input, prompt_input, workflow_radio],
             outputs=[tryon_result, error_box],
         )
 
@@ -240,12 +336,6 @@ def build_ui() -> gr.Blocks:
         reject_btn.click(
             fn=lambda: (None, None, gr.update(visible=False)),
             outputs=[tryon_result, selected_preview, tryon_section],
-        )
-
-        workflow_toggle.click(
-            fn=switch_workflow,
-            inputs=[workflow_state],
-            outputs=[workflow_state, workflow_toggle, workflow_label, colour_input, category_input, prompt_input],
         )
 
     return demo
